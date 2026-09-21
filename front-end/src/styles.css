@@ -1,0 +1,32 @@
+.btn-contorno-verde {
+  border: 2px solid #59a403;
+  border-radius: 8px;
+}
+
+.btn-contorno-verde:hover {
+  background-color: #59a403;
+  color: #fff;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-image: url('/bg-loja.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+
+body {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url('/bg-loja.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}

@@ -11,7 +11,7 @@ export const routes: Routes = [
     {path:"cadastro", component:Cadastro},
     {path:"cesta", component:Cesta},
     {path:"busca", component:Busca},
-    {path:"vitrine", component:Vitrine},
+    {path:"", component:Vitrine},
     {path:"detalhes", component:Detalhe},
     {path:"login", component:Login},
     {path:"rec-senha", component:RecSenha}

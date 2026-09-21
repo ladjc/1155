@@ -1,0 +1,194 @@
+/* ===== TOP BAR ===== */
+.top-bar {
+  background-color: #212529; /* bg-dark */
+  padding: 0.5rem 0;
+}
+
+.top-bar-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo-area {
+  flex: 0 0 auto;
+}
+
+.logo-img {
+  max-height: 180px;
+  width: auto;
+}
+
+.search-area {
+  flex: 1 1 300px;
+}
+
+.input-group {
+  display: flex;
+  width: 100%;
+}
+
+.search-input {
+  flex: 1 1 auto;
+  border-radius: 0.375rem 0 0 0.375rem;
+}
+
+.search-btn {
+  border-radius: 0 0.375rem 0.375rem 0;
+}
+
+/* ===== NAV / HAMBURGER (CSS puro) ===== */
+.main-nav {
+  background-color: #212529;
+  border-top: 1px solid #495057;
+  padding: 0.5rem 0;
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.nav-toggle-checkbox {
+  display: none;
+}
+
+.nav-toggle-label {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.nav-toggle-label span {
+  display: block;
+  height: 3px;
+  width: 100%;
+  background-color: #fff;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.5rem;
+}
+
+.nav-item {
+  flex: 1 1 0;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem;
+  color: #fff;
+  text-decoration: none;
+  background-color: #212529;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+/* Item de Login com um pouco de destaque, separado dos demais */
+.nav-item-login {
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.nav-login-link {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* ===== RESPONSIVO (breakpoint em 768px) ===== */
+@media (max-width: 767.98px) {
+
+  .top-bar-container {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .logo-area {
+    flex: 0 0 100%;
+    text-align: center;
+  }
+
+  .search-area {
+    flex: 0 0 100%;
+  }
+
+  /* Hamburger visível */
+  .nav-toggle-label {
+    display: flex;
+  }
+
+  /* Menu escondido por padrão */
+  .nav-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  .nav-list {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+  }
+
+  .nav-link {
+    justify-content: flex-start;
+  }
+
+  .nav-item-login {
+    margin-left: 0;
+    border-top: 1px solid #495057;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .nav-login-link {
+    justify-content: flex-start;
+    padding-left: 0.5rem;
+  }
+
+  /* Quando o checkbox está marcado, abre o menu */
+  .nav-toggle-checkbox:checked ~ .nav-container {
+    max-height: 600px;
+  }
+
+  /* Anima o ícone hamburger virando "X" (opcional) */
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(1) {
+    transform: translateY(8.5px) rotate(45deg);
+  }
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle-checkbox:checked ~ .nav-toggle-label span:nth-child(3) {
+    transform: translateY(-8.5px) rotate(-45deg);
+  }
+}
+
+.btn-contorno-verde {
+  border: 2px solid #59a403;
+  border-radius: 8px;
+}
+
+.btn-contorno-verde:hover {
+  background-color: #59a403;
+  color: #fff;
+}
