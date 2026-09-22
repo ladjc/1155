@@ -13,7 +13,7 @@
   font-size: clamp(0.85rem, 2vw, 1.25rem);
 }
 
-.valor-verde{
+.valor-verde {
   color: #85e903;
   font-variant-numeric: tabular-nums;
   font-weight: bold;
@@ -24,24 +24,31 @@
   width: 90%;
   margin: 5% auto 0 auto;
   aspect-ratio: 1/1;
-  object-fit: cover;
+  object-fit: fill;
+  cursor: pointer;
   display: block;
+  border-radius: 2%;
+  transition: transform 0.3s ease;
 }
 
-.botoes-acao > * {
+.card-img-top:hover {
+  transform: scale(1.08);
+}
+
+.botoes-acao>* {
   flex: 1;
 }
+
 .product-card {
   background-color: #212529;
   border: 1px solid #495057;
   border-radius: 0.5rem;
   padding: 1rem;
-  cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.15s ease-out;
 }
 
 .product-card:hover {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-  border-color: #28a745; /* combina com seu verde de contorno */
+  border-color: #28a745;
 }
