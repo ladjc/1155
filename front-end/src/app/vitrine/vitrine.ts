@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Produto } from '../models/produto';
 import { ItemCesta } from '../models/item-cesta';
@@ -12,6 +12,9 @@ import { ItemCesta } from '../models/item-cesta';
 export class Vitrine {
   mensagemAlerta: string = '';
   mostrarAlerta: boolean = false;
+  private alertaTimeout: any;
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   lista: Produto[] = [
     {
@@ -176,11 +179,12 @@ export class Vitrine {
     }
   ];
 
-  verDetalhe(obj:Produto) {
-
+  verDetalhe(obj: Produto) {
+    localStorage.setItem("produto-detalhe", JSON.stringify(obj));
+    location.href = "detalhe";
   }
 
-  adicionarCesta(obj:Produto) {
+  adicionarCesta(obj: Produto) {
     const preco = obj.preco;
 
     let json = localStorage.getItem("itemCesta");
@@ -216,17 +220,22 @@ export class Vitrine {
       }
 
       localStorage.setItem("itemCesta", JSON.stringify(itensCesta));
-      this.exibirAlerta("Produto adicionado com sucesso");
+      this.exibirAlerta("Produto adicionado ao carrinho com sucesso!!!");
     }
   }
 
-    exibirAlerta(msg: string) {
+  exibirAlerta(msg: string) {
     this.mensagemAlerta = msg;
     this.mostrarAlerta = true;
 
-    setTimeout(() => {
+    if (this.alertaTimeout) {
+      clearTimeout(this.alertaTimeout);
+    }
+
+    this.alertaTimeout = setTimeout(() => {
       this.mostrarAlerta = false;
-    }, 2000);
+      this.cdr.detectChanges();
+    }, 5000);
   }
 
 }

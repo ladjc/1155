@@ -1,1 +1,32 @@
-<p>detalhe works!</p>
+<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+
+<div class="detalhes-container">
+    <div class="row">
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card card-contorno-verde product-card">
+                <img src="{{obj.id}}.jpg" class="product-img" alt="{{obj.nome}}">
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card card-contorno-verde product-card mb-3">
+                <div class="card-body">
+                    <h3 class="card-title">{{obj.nome}}</h3>
+                    <p class="card-text valor-verde">
+                        <strong>Preço:</strong> R$ {{ obj.preco | number:'1.2-2' }}
+                    </p>
+                    <h6 *ngIf="obj.estoque==0">sem estoque</h6>
+                    <a href="" class="btn btn-dark btn-contorno-verde" *ngIf="obj.estoque > 0"
+                        (click)="adicionarCesta(obj); $event.preventDefault();">Adicionar ao Carrinho</a>
+                </div>
+            </div>
+
+            <div class="card card-contorno-verde product-card">
+                <div class="card-body">
+                    <h3 class="card-title"><strong>Detalhes</strong></h3>
+                    <p class="description">{{obj.descricao}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
