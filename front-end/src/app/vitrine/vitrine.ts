@@ -181,7 +181,7 @@ export class Vitrine {
 
   verDetalhe(obj: Produto) {
     localStorage.setItem("produto-detalhe", JSON.stringify(obj));
-    location.href = "detalhe";
+    location.href = "detalhes";
   }
 
   adicionarCesta(obj: Produto) {
