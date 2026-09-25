@@ -1,1 +1,23 @@
-<p>rec-senha works!</p>
+<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+
+<div class="container">
+    <div class="card card-login">
+        <h2>Informe seu e-mail cadastrado</h2>
+
+        <form class="was-validated">
+            <div class="input-group mb-3 input-group-lg">
+                <span class="input-group-text sp-inp">E-mail</span>
+                <input type="email" class="form-control" placeholder="Digite seu E-mail" required>
+            </div>
+        </form>
+        <p *ngIf="mensagem.length>0">Um e-mail de recuperação foi enviado para o e-mail informado. <br>
+            Verifique a caixa de Spam se necessário. </p>
+
+        <div class="row"> 
+            <button type="button" (click)="recuperar()" class="btn-rec">Enviar</button>      
+            <button type="button" (click)="voltar()" class="btn-rec">Voltar</button>           
+        </div>
+                    
+
+    </div>
+</div>

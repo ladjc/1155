@@ -1,0 +1,64 @@
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.card{
+    display:flex;
+    align-items: center;
+    background-color: #212529;
+    color: white;
+    border: 2px solid #59a403;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.15s ease-out;
+}
+
+.sp-inp{
+    background-color: #212529;
+    color:#59a403;
+    border: 2px solid #59a403;
+    border-radius: 8px;
+
+}
+
+.input-group{
+    margin-top: 10px;
+}
+
+.btn-in{
+    background-color: #212529;
+    color:#fff;
+    border: 2px solid #59a403;
+    border-radius: 8px;
+    padding: 10px;
+    width: 150px;
+    margin: 5px;
+
+}
+
+.ir-cad{
+    color:#59a403;
+}
+
+.alerta-flutuante {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+.alerta-quadrado {
+    background-color: #28a745;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
+}
