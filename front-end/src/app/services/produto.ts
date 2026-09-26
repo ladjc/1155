@@ -1,28 +1,10 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { Produto } from '../models/produto';
 
-export class Produto {
-  id: number = 0;
-  nome: string = '';
-  preco: number = 0;
-  categoria: string = '';
-  estoque: number = 0;
-  descricao: string = '';
-}
-
-@Component({
-  imports: [CommonModule, FormsModule],
-  selector: 'app-nav',
-  styleUrl: './nav.css',
-  templateUrl: './nav.html',
+@Injectable({
+  providedIn: 'root',
 })
-export class Nav {
-  termoBusca = '';
-  sugestoesVisiveis = false;
-  produtosFiltrados: Produto[] = [];
-
+export class ProdutoService {
   private produtos: Produto[] = [
     {
       id: 1,
@@ -169,7 +151,7 @@ export class Nav {
       id: 18,
       nome: 'Water Cooler Cooler Master MasterLiquid ML240L 240mm',
       preco: 549.9,
-      categoria: 'Refrigeração',
+      categoria: 'Outros',
       estoque: 13,
       descricao:
         'Water cooler com radiador de 240mm, oferece resfriamento eficiente para CPUs de alto desempenho.',
@@ -178,7 +160,7 @@ export class Nav {
       id: 19,
       nome: 'Gabinete Cougar MX330-G ATX RGB',
       preco: 429.9,
-      categoria: 'Gabinete',
+      categoria: 'Outros',
       estoque: 17,
       descricao: 'Gabinete ATX com painel lateral em vidro temperado e ventoinhas RGB inclusas.',
     },
@@ -186,65 +168,13 @@ export class Nav {
       id: 20,
       nome: 'Monitor LG UltraGear 24" Full HD 144Hz',
       preco: 999.9,
-      categoria: 'Periféricos',
+      categoria: 'Outros',
       estoque: 11,
       descricao: 'Monitor com taxa de atualização de 144Hz, ideal para jogos competitivos.',
     },
   ];
 
-  constructor(
-    private elementRef: ElementRef,
-    private router: Router,
-  ) {}
-
-  onInputBusca(): void {
-    const termo = this.termoBusca.trim().toLowerCase();
-
-    if (!termo) {
-      this.produtosFiltrados = [];
-      this.sugestoesVisiveis = false;
-      return;
-    }
-
-    this.produtosFiltrados = this.produtos
-      .filter(
-        (p) => p.nome.toLowerCase().includes(termo) || p.categoria.toLowerCase().includes(termo),
-      )
-      .slice(0, 6);
-
-    this.sugestoesVisiveis = this.produtosFiltrados.length > 0;
-  }
-
-  onFocusBusca(): void {
-    if (this.produtosFiltrados.length > 0) {
-      this.sugestoesVisiveis = true;
-    }
-  }
-
-  selecionarProduto(produto: Produto): void {
-    this.termoBusca = produto.nome;
-    this.sugestoesVisiveis = false;
-    this.onBuscar();
-  }
-
-  onBuscar(): void {
-    this.sugestoesVisiveis = false;
-    this.router.navigate(['/busca'], { queryParams: { termo: this.termoBusca } });
-  }
-
-  buscarCategoria(categoria: string): void {
-    this.sugestoesVisiveis = false;
-    this.router.navigate(['/busca'], { queryParams: { categoria } });
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickFora(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.sugestoesVisiveis = false;
-    }
-  }
-
-  formatarPreco(preco: number): string {
-    return preco.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  getProdutos(): Produto[] {
+    return this.produtos;
   }
 }
