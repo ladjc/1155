@@ -1,7 +1,7 @@
 <div class="busca-container">
 
   <div class="busca-encontrados">
-    <h3 class="mb-3 busca-secao-text">Produtos encontrados</h3>
+    <h3 class="mb-3 secao-text">Produtos encontrados</h3>
 
     <div class="alert alert-warning" *ngIf="produtosEncontrados.length <= 0">
       <strong> Nenhum produto {{ this.termoBusca }} encontrado!.</strong>
@@ -41,12 +41,8 @@
     </div>
   </div>
 
-  <div class="produtos-semelhantes">
-    <h3 class="mb-3 busca-secao-text">Produtos semelhantes a: {{ this.termoBusca }}</h3>
-
-    <div class="alert alert-warning" *ngIf="produtosSemelhantes.length <= 0">
-      <strong> Nenhum produto  semelhante a: {{ this.termoBusca }} encontrado!.</strong>
-    </div>
+  <div class="produtos-semelhantes"  *ngIf="produtosSemelhantes.length > 1">
+    <h3 class="mb-3 secao-text">Produtos semelhantes a: {{ this.termoBusca }}</h3>
 
     <div class="row g-3">
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let obj of produtosSemelhantes">

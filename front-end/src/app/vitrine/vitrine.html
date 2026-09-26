@@ -2,7 +2,7 @@
   <strong>Não existem produtos na vitrine!</strong>
 </div>
 
-<div 
+<div
     class="alert alerta-flutuante alerta-quadrado"
     [class.fade-out]="fadeOut"
     *ngIf="mostrarAlerta">
@@ -10,8 +10,10 @@
 </div>
 
 <div class="vitrine-container">
+  <h3 class="mb-3 secao-text">Bem vindo a ExtraTechRestre!</h3>
+
   <div class="row g-3">
-    
+
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let obj of lista">
       <div class="card h-100 card-contorno-verde bg-dark py-2 product-card">
         <img class="card-img-top" src="{{obj.id}}.jpg" alt="{{obj.nome}}">
