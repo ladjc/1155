@@ -1,1 +1,84 @@
-<p>busca works!</p>
+<div class="busca-container">
+
+  <div class="busca-encontrados">
+    <h3 class="mb-3 busca-secao-text">Produtos encontrados</h3>
+
+    <div class="alert alert-warning" *ngIf="produtosEncontrados.length <= 0">
+      <strong> Nenhum produto {{ this.termoBusca }} encontrado!.</strong>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let obj of produtosEncontrados">
+        <div class="card h-100 card-contorno-verde bg-dark py-2 product-card">
+          <img class="card-img-top" src="{{obj.id}}.jpg" alt="{{obj.nome}}">
+
+          <div class="card-body d-flex flex-column">
+            <h4 class="card-title">{{ obj.nome }}</h4>
+
+            <span class="badge bg-danger mb-2 align-self-start" *ngIf="obj.estoque <= 0">Indisponível</span>
+
+            <div class="mt-auto">
+              <p class="card-text valor-verde" *ngIf="obj.preco > 0">
+                R$ {{ obj.preco | number:'1.2-2' }}
+              </p>
+
+              <div class="d-flex gap-2 botoes-acao ">
+                <a href="#" class="btn btn-dark btn-contorno-verde" (click)="verDetalhe(obj); $event.preventDefault();">
+                  Ver mais
+                </a>
+                <a href="#" class="btn btn-dark btn-contorno-verde" *ngIf="obj.estoque > 0"
+                   (click)="adicionarCesta(obj); $event.preventDefault();">
+                  Comprar
+                </a>
+                <button class="btn btn-secondary" disabled *ngIf="obj.estoque <= 0">
+                  Comprar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="produtos-semelhantes">
+    <h3 class="mb-3 busca-secao-text">Produtos semelhantes a: {{ this.termoBusca }}</h3>
+
+    <div class="alert alert-warning" *ngIf="produtosSemelhantes.length <= 0">
+      <strong> Nenhum produto  semelhante a: {{ this.termoBusca }} encontrado!.</strong>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2" *ngFor="let obj of produtosSemelhantes">
+        <div class="card h-100 card-contorno-verde bg-dark py-2 product-card">
+          <img class="card-img-top" src="{{obj.id}}.jpg" alt="{{obj.nome}}">
+
+          <div class="card-body d-flex flex-column">
+            <h4 class="card-title">{{ obj.nome }}</h4>
+
+            <span class="badge bg-danger mb-2 align-self-start" *ngIf="obj.estoque <= 0">Indisponível</span>
+
+            <div class="mt-auto">
+              <p class="card-text valor-verde" *ngIf="obj.preco > 0">
+                R$ {{ obj.preco | number:'1.2-2' }}
+              </p>
+
+              <div class="d-flex gap-2 botoes-acao ">
+                <a href="#" class="btn btn-dark btn-contorno-verde" (click)="verDetalhe(obj); $event.preventDefault();">
+                  Ver mais
+                </a>
+                <a href="#" class="btn btn-dark btn-contorno-verde" *ngIf="obj.estoque > 0"
+                   (click)="adicionarCesta(obj); $event.preventDefault();">
+                  Comprar
+                </a>
+                <button class="btn btn-secondary" disabled *ngIf="obj.estoque <= 0">
+                  Comprar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
