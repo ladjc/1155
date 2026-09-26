@@ -61,12 +61,19 @@
 }
 
 .alerta-quadrado {
-  background-color: #28a745; /* verde, mesma cor do btn-success */
-  color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  min-width: 220px;
-  text-align: center;
-  animation: fadeIn 0.3s ease-in;
+    background-color: #28a745;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
+    opacity: 1;
+    transition: opacity 1s ease;
+
+
+}
+.alerta-quadrado.fade-out {
+    opacity: 0;
 }

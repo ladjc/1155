@@ -1,11 +1,12 @@
 <div class="alert alert-warning" *ngIf="lista.length<=0">
-  <strong>Vazio!</strong> Não existem produtos na vitrine!
+  <strong>Não existem produtos na vitrine!</strong>
 </div>
 
-<div class="alerta-flutuante" *ngIf="mostrarAlerta">
-  <div class="alerta-quadrado">
-    <p>{{ mensagemAlerta }}</p>
-  </div>
+<div 
+    class="alert alerta-flutuante alerta-quadrado"
+    [class.fade-out]="fadeOut"
+    *ngIf="mostrarAlerta">
+    {{mensagem}}
 </div>
 
 <div class="vitrine-container">

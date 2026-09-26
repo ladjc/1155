@@ -1,4 +1,9 @@
-<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+<div 
+    class="alert alerta-flutuante alerta-quadrado"
+    [class.fade-out]="fadeOut"
+    *ngIf="mostrarAlerta">
+    {{mensagem}}
+</div>
 
 <div class="detalhes-container">
     <div class="row">

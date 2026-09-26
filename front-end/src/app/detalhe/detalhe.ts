@@ -17,6 +17,7 @@ export class Detalhe implements OnInit {
 
   mensagem: string = "";
   mostrarAlerta = false;
+  fadeOut = false;
   private alertaTimeout: any;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private cdr: ChangeDetectorRef) { }
@@ -78,14 +79,20 @@ export class Detalhe implements OnInit {
   exibirAlerta(msg: string) {
     this.mensagem = msg;
     this.mostrarAlerta = true;
+    this.fadeOut = false;
 
     if (this.alertaTimeout) {
-      clearTimeout(this.alertaTimeout);
+        clearTimeout(this.alertaTimeout);
     }
 
+    setTimeout(() => {
+        this.fadeOut = true;
+        this.cdr.detectChanges();
+    }, 4000);
+
     this.alertaTimeout = setTimeout(() => {
-      this.mostrarAlerta = false;
-      this.cdr.detectChanges();
+        this.mostrarAlerta = false;
+        this.cdr.detectChanges();
     }, 5000);
   }
 }

@@ -75,4 +75,11 @@
     min-width: 220px;
     text-align: center;
     animation: fadeIn 0.3s ease-in;
+    opacity: 1;
+    transition: opacity 1s ease;
+
+
+}
+.alerta-quadrado.fade-out {
+    opacity: 0;
 }

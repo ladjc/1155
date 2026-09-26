@@ -10,7 +10,8 @@ import { ItemCesta } from '../models/item-cesta';
   templateUrl: './vitrine.html',
 })
 export class Vitrine {
-  mensagemAlerta: string = '';
+  mensagem: string = '';
+  fadeOut:boolean = false;
   mostrarAlerta: boolean = false;
   private alertaTimeout: any;
 
@@ -225,16 +226,22 @@ export class Vitrine {
   }
 
   exibirAlerta(msg: string) {
-    this.mensagemAlerta = msg;
+    this.mensagem = msg;
     this.mostrarAlerta = true;
+    this.fadeOut = false;
 
     if (this.alertaTimeout) {
-      clearTimeout(this.alertaTimeout);
+        clearTimeout(this.alertaTimeout);
     }
 
+    setTimeout(() => {
+        this.fadeOut = true;
+        this.cdr.detectChanges();
+    }, 4000);
+
     this.alertaTimeout = setTimeout(() => {
-      this.mostrarAlerta = false;
-      this.cdr.detectChanges();
+        this.mostrarAlerta = false;
+        this.cdr.detectChanges();
     }, 5000);
   }
 
