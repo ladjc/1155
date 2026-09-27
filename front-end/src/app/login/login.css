@@ -30,7 +30,15 @@
     margin-top: 10px;
 }
 
+.form-check-input{
+    margin-bottom: 15px;
+}
+.form-check-input:checked[type=checkbox] {
+    background-color: #6ec002;
+}
+
 .btn-in{
+    position: relative;
     background-color: #212529;
     color:#fff;
     border: 2px solid #59a403;

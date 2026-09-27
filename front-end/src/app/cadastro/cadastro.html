@@ -1,1 +1,47 @@
-<p>cadastro works!</p>
+<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+
+<div class="container">
+    <div class="card">
+        <h2>Preencha os dados para efetuar seu cadastro</h2>
+        <p>Campos com * são <span>obrigatórios</span></p>
+        <form class="was-validated">
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="txtNome" [(ngModel)]="obj.nome" placeholder="Informe o seu nome"
+                    required>
+                <label for="txtNome" class="form-label">Nome*</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="email" class="form-control" name="txtEmail" [(ngModel)]="obj.email" placeholder="Informe o seu email"
+                required>
+                <label for="txtEmail" class="form-label">Email*</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="txtDocumento" [(ngModel)]="obj.documento"
+                placeholder="Informe o seu documento" required>
+                <label for="txtDocumento" class="form-label">Documento*</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <textarea class="form-control" name="txtLogradouro" [(ngModel)]="obj.endereco"
+                placeholder="Informe o seu endereço completo" required rows="5"></textarea>
+                <label for="txtLogradouro" class="form-label">Endereço*</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="text" class="form-control" name="txtTelefone" [(ngModel)]="obj.telefone"
+                placeholder="Informe o seu telefone" pattern="[0-9]{4,5}-[0-9]{4}">
+                <label for="txtTelefone" class="form-label">Telefone</label>
+            </div>
+            <div class="form-floating mb-3 mt-3">
+                <input type="password" class="form-control" name="txtSenha" placeholder="Informe a sua senha" required
+                [(ngModel)]="obj.senha" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}">
+                <label for="txtSenha" class="form-label">Senha*</label>
+                <div class="invalid-feedback">"A senha deve conter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra
+                minúscula, um número e um caractere especial (@$!%*?&)."</div>
+            </div>
+
+            <div class="btn-group btn-group-lg">
+                <button type="button" (click)="gravar()" class="btn">Cadastrar</button>
+                <button type="button" (click)="voltar()" class="btn">Voltar</button>
+            </div>
+        </form>
+    </div>
+</div>
