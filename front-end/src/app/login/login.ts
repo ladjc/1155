@@ -15,7 +15,7 @@ export class Login {
   verificado:boolean = false;
 
   fazerLogin(){
-      if(this.email=="luigi@gmail.com" || this.email=="luiz@gmail.com" && this.senha=="12345"){
+      if((this.email=="luigi@gmail.com" || this.email=="luiz@gmail.com") && this.senha=="12345"){
         this.mensagem = "Seja bem vindo !"; 
         this.verificado = true; 
       } else if(this.email==""){
