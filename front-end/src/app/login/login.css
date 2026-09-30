@@ -31,6 +31,7 @@
 }
 
 .form-check-input{
+    
     margin-bottom: 15px;
 }
 .form-check-input:checked[type=checkbox] {
@@ -60,8 +61,19 @@
     z-index: 1050;
 }
 
-.alerta-quadrado {
+.alerta-quadrado-c {
     background-color: #28a745;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.alerta-quadrado-f {
+    background-color: #a72828;
     color: #fff;
     padding: 20px;
     border-radius: 8px;

@@ -1,4 +1,5 @@
-<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+<div class="alert alerta-flutuante alerta-quadrado-f" *ngIf="mensagem.length>0 && verificado==false">{{mensagem}}</div>
+<div class="alert alerta-flutuante alerta-quadrado-c" *ngIf="verificado==true">{{mensagem}}</div>
 
 <div class="container">
     <div class="card card-login">
@@ -7,11 +8,11 @@
         <form class="was-validated">
             <div class="input-group mb-3 input-group-lg">
                 <span class="input-group-text sp-inp">E-mail</span>
-                <input type="email" id="email" [(ngModel)]="this.email" placeholder="Digite seu E-mail" class="form-control" required>
+                <input type="email" name="email" [(ngModel)]="email" placeholder="Digite seu E-mail" class="form-control" required>
             </div>
             <div class="input-group mb-3 input-group-lg">
                 <span class="input-group-text sp-inp">Senha</span>
-                <input type="password" id="senha" [(ngModel)]="this.senha" placeholder="Digite sua Senha" class="form-control" required> 
+                <input type="password" name="senha" [(ngModel)]="senha" placeholder="Digite sua Senha" class="form-control" required> 
                 <!-- pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}" --> 
             </div>
         </form>
@@ -19,7 +20,7 @@
             <input class="form-check-input" type="checkbox" name="lembrar"> Salvar usuário
         </label>
         <div class="row"> 
-            <button type="button" (click)="fazerLogin();" class="btn-in">Entrar</button>        
+            <button (click)="fazerLogin();" class="btn-in">Entrar</button>        
             <button type="button" (click)="esqueciSenha()" class="btn-in">Esqueci a Senha</button>           
         </div>
     </div>
@@ -27,7 +28,7 @@
 
 <div class="container">
     <div class="card">
-        <h3>Não possui cadastro</h3>
+        <h3>Não possui cadastro?</h3>
         <p>Clique <a class="ir-cad" href="cadastro">aqui</a> e faça o seu agora mesmo</p>
     </div>
 
