@@ -18,6 +18,7 @@
       <div class="card description-card mb-3">
         <div class="card-body">
           <p class="card-text valor-verde">
+            <strong>Disponivel:</strong> {{obj.estoque}} unidades<br>
             <strong>Preço:</strong> R$ {{ obj.preco | number:'1.2-2' }}
           </p>
           <h6 *ngIf="obj.estoque==0">sem estoque</h6>
