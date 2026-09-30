@@ -1,7 +1,12 @@
 <div class="alert alerta-flutuante alerta-quadrado-f" *ngIf="mensagem.length>0 && verificado==false">{{mensagem}}</div>
 <div class="alert alerta-flutuante alerta-quadrado-c" *ngIf="verificado==true">{{mensagem}}</div>
 
-<div class="container">
+<div class="container" *ngIf="verificado==false">
+    <h3 class="mb-3 secao-text">Faça seu login e aproveite produtos com até <span id="sp-ttl"><b>25%</b></span> de desconto!</h3>
+</div>
+
+<div class="container" *ngIf="verificado==false">
+    
     <div class="card card-login">
         <h2>Entre com seu e-mail e senha</h2>
 
@@ -21,15 +26,26 @@
         </label>
         <div class="row"> 
             <button (click)="fazerLogin();" class="btn-in">Entrar</button>        
-            <button type="button" (click)="esqueciSenha()" class="btn-in">Esqueci a Senha</button>           
+            <button (click)="esqueciSenha()" class="btn-in">Esqueci a Senha</button>           
         </div>
     </div>
 </div>
 
-<div class="container">
+<div class="container" *ngIf="verificado==false">
     <div class="card">
         <h3>Não possui cadastro?</h3>
-        <p>Clique <a class="ir-cad" href="cadastro">aqui</a> e faça o seu agora mesmo</p>
+        <p style="font-size: 20px;">Clique <a class="ir-cad" href="cadastro">aqui</a> e faça o seu agora mesmo</p>
     </div>
 
+</div>
+
+<div class="container" *ngIf="verificado==true">
+    <div class="card">
+        <h2>Login feito com sucesso</h2>
+        <p style="font-size: 20px;">Aproveite nossos preços de outro mundo.</p>
+        <div class="row"> 
+            <button (click)="voltar()" class="btn-in">Voltar ao Menu</button>        
+            <button type="button" (click)="carrinho()" class="btn-in">Ir para o Carrinho</button>           
+        </div>
+    </div>
 </div>

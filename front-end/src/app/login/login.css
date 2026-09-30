@@ -4,6 +4,9 @@
     align-items: center;
 
 }
+#sp-ttl{
+    color: #85e903;
+}
 
 .card{
     display:flex;

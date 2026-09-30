@@ -33,5 +33,11 @@ export class Login {
   esqueciSenha(){
     location.href="rec-senha";
   }
+  voltar(){
+    location.href="";
+  }
+  carrinho(){
+    location.href="cesta";
+  }
 
 }
