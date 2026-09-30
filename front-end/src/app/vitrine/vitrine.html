@@ -24,6 +24,7 @@
         <div class="card-body d-flex flex-column">
           <h4 class="card-title">{{ obj.nome }}</h4>
 
+          <span class="badge bg-success mb-2 align-self-start" *ngIf="obj.estoque > 0">Em estoque: {{obj.estoque}} Unid</span>
           <span class="badge bg-danger mb-2 align-self-start" *ngIf="obj.estoque <= 0">Indisponível</span>
 
           <div class="mt-auto">
