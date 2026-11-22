@@ -1,4 +1,16 @@
-<div class="alert alert-warning" *ngIf="lista.length<=0">
+<div class="text-center my-5" *ngIf="carregando">
+  <div class="spinner-border text-success" role="status"></div>
+  <p class="mt-2">Carregando produtos...</p>
+</div>
+
+<div class="alert alert-danger d-flex justify-content-between align-items-center" *ngIf="erro">
+  <span>{{ erro }}</span>
+  <button type="button" class="btn btn-sm btn-outline-light" (click)="carregarVitrine()">
+    Tentar novamente
+  </button>
+</div>
+
+<div class="alert alert-warning" *ngIf="!carregando && !erro && lista.length <= 0">
   <strong>Não existem produtos na vitrine!</strong>
 </div>
 

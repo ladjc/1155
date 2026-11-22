@@ -1,9 +1,18 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
+import { Observable, Subject, TimeoutError, catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { Produto } from '../models/produto';
 import { ItemCesta } from '../models/item-cesta';
 import { ProdutoService } from '../services/produto';
+
+interface ResultadoBusca {
+  encontrados: Produto[];
+  semelhantes: Produto[];
+}
+
+const SEM_RESULTADO: ResultadoBusca = { encontrados: [], semelhantes: [] };
 
 @Component({
   imports: [CommonModule],
@@ -12,14 +21,20 @@ import { ProdutoService } from '../services/produto';
   templateUrl: './busca.html',
 })
 export class Busca implements OnInit {
-  produtos: Produto[] = [];
   mensagemAlerta: string = '';
   mostrarAlerta: boolean = false;
   private alertaTimeout: any;
 
+  carregando: boolean = false;
+  erro: string = '';
+
   termoBusca: string = '';
+  private categoria: string = '';
   produtosEncontrados: Produto[] = [];
   produtosSemelhantes: Produto[] = [];
+
+  // Cada vez que este Subject emite, uma nova busca é feita no back-end
+  private disparoBusca$ = new Subject<void>();
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -28,48 +43,105 @@ export class Busca implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.produtos = this.produtoService.getProdutos().filter((p) => p.estoque > 0);
+    this.disparoBusca$
+      .pipe(
+        tap(() => {
+          this.carregando = true;
+          this.erro = '';
+          this.cdr.markForCheck();
+        }),
+        // switchMap cancela a busca anterior se o usuário pesquisar outra coisa antes dela terminar
+        switchMap(() =>
+          this.buscarNoBackend().pipe(
+            catchError((e) => {
+              this.erro = this.montarMensagemErro(e);
+              return of(SEM_RESULTADO);
+            }),
+          ),
+        ),
+      )
+      .subscribe((resultado) => {
+        this.produtosEncontrados = resultado.encontrados;
+        this.produtosSemelhantes = resultado.semelhantes;
+        this.carregando = false;
+        this.cdr.detectChanges();
+      });
 
+    // A busca é refeita sempre que o termo/categoria da URL mudar
     this.route.queryParamMap.subscribe((params) => {
-      const categoria = params.get('categoria');
-
-      if (categoria) {
-        this.termoBusca = categoria;
-        this.pesquisarPorCategoria(categoria);
-      } else {
-        this.termoBusca = params.get('termo') ?? '';
-        this.pesquisar();
-      }
-
-      this.cdr.detectChanges();
+      this.categoria = params.get('categoria') ?? '';
+      this.termoBusca = this.categoria || (params.get('termo') ?? '');
+      this.disparoBusca$.next();
     });
   }
 
-  pesquisarPorCategoria(categoria: string): void {
-    this.termoBusca = categoria;
-    this.produtosEncontrados = this.produtos.filter((p) => p.categoria === categoria);
-    this.produtosSemelhantes = [];
+  // Usado pelo botão "Tentar novamente"
+  carregarProdutos(): void {
+    this.disparoBusca$.next();
   }
 
-  pesquisar(): void {
-    const termo = this.termoBusca.trim().toLowerCase();
+  private buscarNoBackend(): Observable<ResultadoBusca> {
+    const termo = this.termoBusca.trim();
 
     if (!termo) {
-      this.produtosEncontrados = [];
-      this.produtosSemelhantes = [];
-      return;
+      return of(SEM_RESULTADO);
     }
 
-    // Produtos encontrados cujo o nome contém o termo pesquisado
-    this.produtosEncontrados = this.produtos.filter((p) => p.nome.toLowerCase().includes(termo));
+    // Busca por categoria (botões da nav): só os produtos da categoria
+    if (this.categoria) {
+      return this.produtoService.buscar({ categoria: this.categoria }).pipe(
+        map((lista) => ({ encontrados: this.soDisponiveis(lista), semelhantes: [] })),
+      );
+    }
 
-    const idsEncontrados = new Set(this.produtosEncontrados.map((p) => p.id));
-    const categoriasEncontradas = new Set(this.produtosEncontrados.map((p) => p.categoria));
-
-    // Produtos semelhantes que estão mesma categoria dos encontrados, mas que não estão na lista de encontrados
-    this.produtosSemelhantes = this.produtos.filter(
-      (p) => categoriasEncontradas.has(p.categoria) && !idsEncontrados.has(p.id),
+    // Busca por termo: primeiro os encontrados, depois os semelhantes (mesma categoria)
+    return this.produtoService.buscar({ termo }).pipe(
+      map((lista) => this.soDisponiveis(lista)),
+      switchMap((encontrados) =>
+        this.buscarSemelhantes(encontrados).pipe(
+          map((semelhantes) => ({ encontrados, semelhantes })),
+        ),
+      ),
     );
+  }
+
+  // Produtos das mesmas categorias dos encontrados, exceto os que já foram encontrados
+  private buscarSemelhantes(encontrados: Produto[]): Observable<Produto[]> {
+    const categorias = [...new Set(encontrados.map((p) => p.categoria))];
+
+    if (categorias.length === 0) {
+      return of([]);
+    }
+
+    const idsEncontrados = new Set(encontrados.map((p) => p.id));
+
+    return forkJoin(categorias.map((c) => this.produtoService.buscar({ categoria: c }))).pipe(
+      map((listas) => this.soDisponiveis(listas.flat()).filter((p) => !idsEncontrados.has(p.id))),
+      // Os semelhantes são um extra: se falharem, a página mostra só os encontrados
+      catchError(() => of([] as Produto[])),
+    );
+  }
+
+  private soDisponiveis(lista: Produto[] | null): Produto[] {
+    return (lista ?? []).filter((p) => p.estoque > 0);
+  }
+
+  private montarMensagemErro(e: unknown): string {
+    if (e instanceof TimeoutError) {
+      return 'O servidor demorou demais para responder. Tente novamente.';
+    }
+    if (e instanceof HttpErrorResponse) {
+      if (e.status === 0) {
+        return 'Não foi possível conectar ao servidor. Verifique se o back-end está rodando.';
+      }
+      if (e.status === 404) {
+        return 'Serviço de busca não encontrado (404).';
+      }
+      if (e.status >= 500) {
+        return 'Erro no servidor ao buscar os produtos. Tente novamente mais tarde.';
+      }
+    }
+    return 'Não foi possível buscar os produtos.';
   }
 
   verDetalhe(obj: Produto) {

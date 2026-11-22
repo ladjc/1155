@@ -3,7 +3,19 @@
   <div class="busca-encontrados">
     <h3 class="mb-3 secao-text">Produtos encontrados</h3>
 
-    <div class="alert alert-warning" *ngIf="produtosEncontrados.length <= 0">
+    <div class="text-center my-5" *ngIf="carregando">
+      <div class="spinner-border text-success" role="status"></div>
+      <p class="mt-2">Carregando produtos...</p>
+    </div>
+
+    <div class="alert alert-danger d-flex justify-content-between align-items-center" *ngIf="erro">
+      <span>{{ erro }}</span>
+      <button type="button" class="btn btn-sm btn-outline-light" (click)="carregarProdutos()">
+        Tentar novamente
+      </button>
+    </div>
+
+    <div class="alert alert-warning" *ngIf="!carregando && !erro && produtosEncontrados.length <= 0">
       <strong> Nenhum produto {{ this.termoBusca }} encontrado!</strong>
     </div>
 

@@ -1,5 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TimeoutError } from 'rxjs';
 import { Produto } from '../models/produto';
 import { ItemCesta } from '../models/item-cesta';
 import { ProdutoService } from '../services/produto';
@@ -16,14 +18,53 @@ export class Vitrine implements OnInit {
   mostrarAlerta: boolean = false;
   private alertaTimeout: any;
 
-  constructor(private cdr: ChangeDetectorRef, private produtoService: ProdutoService,) {
-  }
+  lista: Produto[] = [];
+  carregando: boolean = false;
+  erro: string = '';
+
+  constructor(private cdr: ChangeDetectorRef, private produtoService: ProdutoService) {}
 
   ngOnInit() {
-    this.lista = this.produtoService.getProdutos()
+    this.carregarVitrine();
   }
 
-  lista: Produto[] = [];
+  carregarVitrine() {
+    this.carregando = true;
+    this.erro = '';
+    this.cdr.detectChanges();
+
+    this.produtoService.getVitrine().subscribe({
+      next: (produtos) => {
+        this.lista = produtos ?? [];
+        this.carregando = false;
+        this.cdr.detectChanges();
+      },
+      error: (e) => {
+        this.lista = [];
+        this.erro = this.montarMensagemErro(e);
+        this.carregando = false;
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  private montarMensagemErro(e: unknown): string {
+    if (e instanceof TimeoutError) {
+      return 'O servidor demorou demais para responder. Tente novamente.';
+    }
+    if (e instanceof HttpErrorResponse) {
+      if (e.status === 0) {
+        return 'Não foi possível conectar ao servidor. Verifique se o back-end está rodando.';
+      }
+      if (e.status === 404) {
+        return 'Serviço da vitrine não encontrado (404).';
+      }
+      if (e.status >= 500) {
+        return 'Erro no servidor ao carregar a vitrine. Tente novamente mais tarde.';
+      }
+    }
+    return 'Não foi possível carregar os produtos.';
+  }
 
   verDetalhe(obj: Produto) {
     localStorage.setItem('produto-detalhe', JSON.stringify(obj));
@@ -65,8 +106,9 @@ export class Vitrine implements OnInit {
       }
 
       localStorage.setItem('itemCesta', JSON.stringify(itensCesta));
-      this.exibirAlerta('Produto adicionado ao carrinho com sucesso!!!');
     }
+
+    this.exibirAlerta('Produto adicionado ao carrinho com sucesso!!!');
   }
 
   exibirAlerta(msg: string) {
