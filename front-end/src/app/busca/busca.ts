@@ -1,7 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, TimeoutError, catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { Produto } from '../models/produto';
 import { ItemCesta } from '../models/item-cesta';
@@ -39,6 +39,7 @@ export class Busca implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
+    private router: Router,
     private produtoService: ProdutoService,
   ) {}
 
@@ -184,8 +185,10 @@ export class Busca implements OnInit {
       }
 
       localStorage.setItem('itemCesta', JSON.stringify(itensCesta));
-      this.exibirAlerta('Produto adicionado ao carrinho com sucesso!!!');
     }
+
+    sessionStorage.setItem('mensagemCarrinho', 'Produto adicionado com sucesso');
+    this.router.navigate(['/cesta']);
   }
 
   exibirAlerta(msg: string) {

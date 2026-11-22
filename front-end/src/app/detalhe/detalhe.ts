@@ -10,6 +10,7 @@ import {
 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { TimeoutError } from 'rxjs';
 
 import { Produto } from '../models/produto';
@@ -40,7 +41,8 @@ export class Detalhe implements OnInit, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private cdr: ChangeDetectorRef,
-    private produtoService: ProdutoService
+    private produtoService: ProdutoService,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -191,7 +193,8 @@ export class Detalhe implements OnInit, OnDestroy {
       localStorage.setItem("itemCesta", JSON.stringify(itensCesta));
     }
 
-    this.exibirAlerta("Produto adicionado ao carrinho com sucesso!!!");
+    sessionStorage.setItem('mensagemCarrinho', 'Produto adicionado com sucesso');
+    this.router.navigate(['/cesta']);
   }
 
   // Exibe o alerta flutuante

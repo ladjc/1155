@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
 import { Vitrine } from './vitrine';
 
 describe('Vitrine', () => {
@@ -11,7 +12,11 @@ describe('Vitrine', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Vitrine],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: Router, useValue: { navigate: () => Promise.resolve(true) } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Vitrine);

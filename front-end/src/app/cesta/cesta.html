@@ -2,6 +2,11 @@
 
     <h3 class="mb-3">Carrinho de compras</h3>
 
+    <div class="alert" [class.alert-success]="mensagemPedido.includes('sucesso')"
+        [class.alert-danger]="!mensagemPedido.includes('sucesso')" *ngIf="mensagemPedido">
+        {{ mensagemPedido }}
+    </div>
+
     <div class="alert alert-warning" *ngIf="itens.length <= 0">
         <strong>Vazio!</strong> Nenhum item no carrinho.
     </div>
@@ -49,7 +54,9 @@
                 <h3 class="mb-3">Resumo</h3>
                 <hr>
                 <p class="card-text mt-2"><strong>Total:</strong>R$ {{ calculaTotal() | number:'1.2-2' }}</p>
-                <button class="btn btn-success mb-2" (click)="finalizarCompra()">Finalizar Compra</button>
+                <button class="btn btn-success mb-2" (click)="finalizarCompra()" [disabled]="enviandoPedido">
+                    {{ enviandoPedido ? 'Finalizando...' : 'Finalizar Compra' }}
+                </button>
                 <button class="btn btn-outline-danger" (click)="limparCarrinho()">Limpar Carrinho</button>
             </div>
         </div>

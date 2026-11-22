@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { TimeoutError } from 'rxjs';
 import { Produto } from '../models/produto';
 import { ItemCesta } from '../models/item-cesta';
@@ -22,7 +23,11 @@ export class Vitrine implements OnInit {
   carregando: boolean = false;
   erro: string = '';
 
-  constructor(private cdr: ChangeDetectorRef, private produtoService: ProdutoService) { }
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private produtoService: ProdutoService,
+    private router: Router,
+  ) { }
 
   ngOnInit() {
     this.carregarVitrine();
@@ -108,7 +113,8 @@ export class Vitrine implements OnInit {
       localStorage.setItem('itemCesta', JSON.stringify(itensCesta));
     }
 
-    this.exibirAlerta('Produto adicionado ao carrinho com sucesso!!!');
+    sessionStorage.setItem('mensagemCarrinho', 'Produto adicionado com sucesso');
+    this.router.navigate(['/cesta']);
   }
 
   exibirAlerta(msg: string) {
