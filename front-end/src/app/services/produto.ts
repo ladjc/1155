@@ -18,7 +18,7 @@ export class ProdutoService {
   // Tempo máximo de espera pela resposta do back-end (ms)
   private readonly tempoLimite = 10000;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   // GET /api/produto/vitrine
   getVitrine(): Observable<Produto[]> {
@@ -40,6 +40,13 @@ export class ProdutoService {
 
     return this.http
       .get<Produto[]>(`${this.apiUrl}/busca`, { params })
+      .pipe(timeout(this.tempoLimite));
+  }
+
+  // GET /api/produto/{id}
+  getProdutoPorId(id: number): Observable<Produto> {
+    return this.http
+      .get<Produto>(`${this.apiUrl}/${id}`)
       .pipe(timeout(this.tempoLimite));
   }
 }

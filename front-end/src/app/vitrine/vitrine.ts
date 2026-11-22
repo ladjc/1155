@@ -22,7 +22,7 @@ export class Vitrine implements OnInit {
   carregando: boolean = false;
   erro: string = '';
 
-  constructor(private cdr: ChangeDetectorRef, private produtoService: ProdutoService) {}
+  constructor(private cdr: ChangeDetectorRef, private produtoService: ProdutoService) { }
 
   ngOnInit() {
     this.carregarVitrine();
@@ -67,10 +67,10 @@ export class Vitrine implements OnInit {
   }
 
   verDetalhe(obj: Produto) {
-    localStorage.setItem('produto-detalhe', JSON.stringify(obj));
+    localStorage.setItem('produto-detalhe-id', obj.id.toString());
     location.href = 'detalhes';
   }
-
+  
   adicionarCesta(obj: Produto) {
     const preco = obj.preco;
 

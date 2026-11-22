@@ -1,38 +1,103 @@
-<div
-  class="alert alerta-flutuante alerta-quadrado"
-  [class.fade-out]="fadeOut"
-  *ngIf="mostrarAlerta">
+<!-- Alerta flutuante de sucesso -->
+<div class="alert alerta-flutuante alerta-quadrado" [class.fade-out]="fadeOut" *ngIf="mostrarAlerta">
   {{ mensagem }}
 </div>
 
-<div class="detalhes-container">
-  <div class="row">
-    <div class="col-12 col-md-6 mb-3">
-      <div class="card description-card product-card">
-        <img src="{{obj.id}}.jpg" class="product-img" alt="{{obj.nome}}">
-      </div>
-    </div>
-
-    <div class="col-12 col-md-6 mb-3">
-      <h3 class="secao-text">{{ obj.nome }}</h3>
-      <div class="card description-card mb-3">
-        <div class="card-body">
-          <p class="card-text valor-verde">
-            <strong>Disponivel:</strong> {{obj.estoque}} unidades<br>
-            <strong>Preço:</strong> R$ {{ obj.preco | number:'1.2-2' }}
-          </p>
-          <h6 *ngIf="obj.estoque==0">sem estoque</h6>
-          <a href="" class="btn btn-dark btn-contorno-verde" *ngIf="obj.estoque > 0"
-             (click)="adicionarCesta(obj); $event.preventDefault();">Adicionar ao Carrinho</a>
-        </div>
-      </div>
-
-      <h3 class="secao-text"><strong>Detalhes</strong></h3>
-      <div class="card description-card">
-        <div class="card-body">
-          <p class="description">{{ obj.descricao }}</p>
-        </div>
-      </div>
-    </div>
+<!-- Indicador de carregamento -->
+<div class="text-center my-5" *ngIf="carregando">
+  <div class="spinner-border text-success" role="status">
+    <span class="visually-hidden">Carregando...</span>
   </div>
+
+  <p class="mt-2">Carregando detalhes do produto...</p>
+</div>
+
+<!-- Mensagem de erro -->
+<div class="alert alert-danger d-flex justify-content-between align-items-center" *ngIf="!carregando && erro">
+
+  <span>{{ erro }}</span>
+
+  <button type="button" class="btn btn-sm btn-outline-light ms-3" (click)="carregarProduto()">
+    Tentar novamente
+  </button>
+</div>
+
+<!-- Conteúdo dos detalhes do produto -->
+<div class="detalhes-container" *ngIf="!carregando && !erro && obj.id">
+
+  <div class="row">
+
+    <!-- Imagem do produto -->
+    <div class="col-12 col-md-6 mb-3">
+
+      <div class="card description-card product-card">
+
+        <img src="{{ obj.id }}.jpg" class="product-img" alt="{{ obj.nome }}">
+
+      </div>
+
+    </div>
+
+    <!-- Informações do produto -->
+    <div class="col-12 col-md-6 mb-3">
+
+      <h3 class="secao-text">
+        {{ obj.nome }}
+      </h3>
+
+      <!-- Preço e estoque -->
+      <div class="card description-card mb-3">
+
+        <div class="card-body">
+
+          <p class="card-text valor-verde">
+
+            <strong>Disponível:</strong>
+            {{ obj.estoque }} unidades
+
+            <br>
+
+            <strong>Preço:</strong>
+            R$ {{ obj.preco | number:'1.2-2' }}
+
+          </p>
+
+          <!-- Produto sem estoque -->
+          <h6 *ngIf="obj.estoque == 0">
+            Sem estoque
+          </h6>
+
+          <!-- Adicionar ao carrinho -->
+          <a href="#" class="btn btn-dark btn-contorno-verde" *ngIf="obj.estoque > 0"
+            (click)="adicionarCesta(obj); $event.preventDefault()">
+
+            Adicionar ao Carrinho
+
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- Descrição do produto -->
+      <h3 class="secao-text">
+        <strong>Detalhes</strong>
+      </h3>
+
+      <div class="card description-card">
+
+        <div class="card-body">
+
+          <p class="description">
+            {{ obj.descricao }}
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
