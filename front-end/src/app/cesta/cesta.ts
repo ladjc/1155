@@ -5,6 +5,8 @@ import { TimeoutError } from 'rxjs';
 import { ItemCesta } from '../models/item-cesta';
 import { PedidoRequest } from '../models/pedido';
 import { PedidoService } from '../services/pedido';
+import { AuthService } from '../services/auth';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [CommonModule],
@@ -22,7 +24,9 @@ export class Cesta implements OnInit, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private pedidoService: PedidoService
+    private pedidoService: PedidoService,
+    private auth: AuthService,
+    private router: Router
   ) { }
 
 
@@ -122,9 +126,16 @@ export class Cesta implements OnInit, OnDestroy {
       return;
     }
 
+    // Só finaliza a compra quem estiver logado; o pedido fica vinculado ao cliente
+    const cliente = this.auth.clienteLogado();
+    if (!cliente) {
+      this.mensagemPedido = 'Faça login para finalizar a compra.';
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const pedido: PedidoRequest = {
-      // Sem login por enquanto. O back-end já está preparado para receber o id.
-      clienteId: null,
+      clienteId: cliente.id,
       itens: this.itens.map((item) => ({
         produtoId: item.produto.id,
         quantidade: item.quantidade,

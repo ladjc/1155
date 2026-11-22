@@ -1,0 +1,63 @@
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    width: 100%;
+    max-width: 657px;
+    background-color: #212529;
+    color: white;
+    border: 2px solid #59a403;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.titulo-conta{
+    align-self: flex-start;
+    margin-bottom: 1.25rem;
+}
+
+/* Dados do cliente: rótulo em verde, valor em branco */
+.dados-conta{
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.6rem 1.25rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.dados-conta dt{
+    color: #59a403;
+    font-weight: bold;
+}
+
+.dados-conta dd{
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.btn-in{
+    background-color: #212529;
+    color:#fff;
+    border: 2px solid #59a403;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.btn-in:hover{
+    background-color: #59a403;
+}
+
+@media (max-width: 500px) {
+    .dados-conta{
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+    }
+
+    .dados-conta dd{
+        margin-bottom: 0.6rem;
+    }
+}

@@ -1,0 +1,27 @@
+<!-- Alerta temporário: some sozinho depois de 4 segundos -->
+<div class="alert alerta-flutuante alerta-quadrado alerta-temporario" *ngIf="mensagem.length>0" role="status">{{mensagem}}</div>
+
+<div class="container" *ngIf="auth.clienteLogado() as cliente">
+    <div class="card">
+        <h2 class="secao-text titulo-conta">Minha conta</h2>
+
+        <dl class="dados-conta">
+            <dt>Nome</dt>
+            <dd>{{ cliente.nome }}</dd>
+            <dt>E-mail</dt>
+            <dd>{{ cliente.email }}</dd>
+            <dt>Documento</dt>
+            <dd>{{ cliente.documento }}</dd>
+            <dt>Telefone</dt>
+            <dd>{{ cliente.telefone || 'Não informado' }}</dd>
+            <dt>Endereço</dt>
+            <dd>{{ cliente.endereco }}</dd>
+        </dl>
+
+        <div class="botoes-acao">
+            <button type="button" class="btn-in" (click)="alterarCadastro()">Alterar cadastro</button>
+            <button type="button" class="btn-in" (click)="alterarSenha()">Alterar senha</button>
+            <button type="button" class="btn-in" (click)="voltar()">Voltar à loja</button>
+        </div>
+    </div>
+</div>

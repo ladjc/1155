@@ -36,25 +36,34 @@
     border: 2px solid #59a403;
     border-radius: 8px;
     padding: 10px;
-    width: 150px;
+    min-width: 150px; /* cresce se o texto for maior (ex.: "Usar outro e-mail") */
+    width: auto;
     margin: 5px;
 
 }
 
-.alerta-flutuante {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1050;
+/* Alertas (posição, cor verde e tempo de 4 s) vêm do styles.css; aqui só o vermelho de erro */
+.alerta-quadrado.alerta-erro {
+    background-color: #a72828;
 }
 
-.alerta-quadrado {
-    background-color: #28a745;
-    color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    min-width: 220px;
+.email-confirmado{
+    font-size: 1.1rem;
     text-align: center;
-    animation: fadeIn 0.3s ease-in;
+}
+
+/* Campo do código: 6 dígitos grandes e espaçados, centralizados */
+.form-codigo{
+    width: 100%;
+    max-width: 280px;
+    margin: 0.5rem auto 1rem;
+}
+
+.campo-codigo{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 0.5rem;
+    border: 2px solid #59a403;
+    border-radius: 8px;
 }

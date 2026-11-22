@@ -1,0 +1,91 @@
+<!-- Alerta temporário: some sozinho depois de 4 segundos -->
+<div class="alert alerta-flutuante alerta-quadrado alerta-temporario alerta-erro" *ngIf="mensagem.length>0" role="alert">{{mensagem}}</div>
+
+<div class="container">
+    <!-- Abriu a página direto, sem confirmar o código -->
+    <div class="card" *ngIf="semAutorizacao; else formulario">
+        <h2>Recuperação de senha</h2>
+        <p class="texto-centro">Para criar uma nova senha, primeiro confirme o código enviado ao seu e-mail.</p>
+        <div class="btn-group btn-group-lg">
+            <button type="button" (click)="recomecar()" class="btn">Ir para "Esqueci a senha"</button>
+        </div>
+    </div>
+
+    <ng-template #formulario>
+        <div class="card">
+            <h2>Crie a sua nova senha</h2>
+            <p *ngIf="email">Conta: <span>{{ email }}</span></p>
+            <p>Campos com * são <span>obrigatórios</span></p>
+
+            <!-- Clicar no campo não deixa nada vermelho; o alerta só aparece depois que
+                 a pessoa digita e o campo fica vazio ou fora da regra -->
+            <form (ngSubmit)="salvar()">
+                <div class="form-floating mb-3 mt-3 campo-senha">
+                    <input [type]="mostrarNovaSenha ? 'text' : 'password'" class="form-control" id="txtNovaSenha" name="txtNovaSenha"
+                        placeholder="Nova senha" autocomplete="new-password" required [pattern]="padraoSenha"
+                        [(ngModel)]="novaSenha" #novaSenhaCampo="ngModel" #novaSenhaEl
+                        (focus)="novaSenhaEmFoco = true" (blur)="novaSenhaEmFoco = false"
+                        [class.is-invalid]="campoInvalido(novaSenhaCampo, novaSenhaEl)" [class.is-valid]="campoValido(novaSenhaCampo, novaSenhaEl)"
+                        aria-describedby="requisitosNovaSenha">
+                    <label for="txtNovaSenha" class="form-label">Nova senha*</label>
+                <button type="button" class="btn-olho" (mousedown)="$event.preventDefault()"
+                    (click)="mostrarNovaSenha = !mostrarNovaSenha"
+                    [attr.aria-label]="mostrarNovaSenha ? 'Ocultar senha' : 'Mostrar senha'"
+                    [attr.aria-pressed]="mostrarNovaSenha" [title]="mostrarNovaSenha ? 'Ocultar senha' : 'Mostrar senha'">
+                    <svg class="icone-contorno" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path *ngIf="mostrarNovaSenha" d="M3 3l18 18" />
+                    </svg>
+                </button>
+                    <div class="invalid-feedback" *ngIf="!novaSenhaEmFoco">
+                        {{ novaSenhaCampo.errors?.['required'] ? 'Informe a nova senha.' : 'A senha não atende a todos os requisitos.' }}
+                    </div>
+
+                    <!-- Só aparece com o campo em foco e lista apenas o que ainda falta -->
+                    <div id="requisitosNovaSenha" class="requisitos-senha" *ngIf="novaSenhaEmFoco" aria-live="polite">
+                        <ng-container *ngIf="requisitosFaltando.length > 0; else senhaOk">
+                            <span class="requisitos-titulo">A senha ainda precisa de:</span>
+                            <ul>
+                                <li *ngFor="let requisito of requisitosFaltando">{{ requisito }}</li>
+                            </ul>
+                        </ng-container>
+                        <ng-template #senhaOk>
+                            <span class="requisitos-ok">Senha válida! Todos os requisitos foram atendidos.</span>
+                        </ng-template>
+                    </div>
+                </div>
+
+                <div class="form-floating mb-3 mt-3 campo-senha">
+                    <input [type]="mostrarConfirmacao ? 'text' : 'password'" class="form-control" id="txtConfirmacao" name="txtConfirmacao"
+                        placeholder="Confirme a nova senha" autocomplete="new-password" required
+                        [(ngModel)]="confirmacao" #confirmacaoCampo="ngModel" #confirmacaoEl
+                        [class.is-invalid]="campoInvalido(confirmacaoCampo, confirmacaoEl) || confirmacaoDiferente(confirmacaoCampo, confirmacaoEl)"
+                        [class.is-valid]="campoValido(confirmacaoCampo, confirmacaoEl) && !confirmacaoDiferente(confirmacaoCampo, confirmacaoEl)">
+                    <label for="txtConfirmacao" class="form-label">Confirme a nova senha*</label>
+                <button type="button" class="btn-olho" (mousedown)="$event.preventDefault()"
+                    (click)="mostrarConfirmacao = !mostrarConfirmacao"
+                    [attr.aria-label]="mostrarConfirmacao ? 'Ocultar senha' : 'Mostrar senha'"
+                    [attr.aria-pressed]="mostrarConfirmacao" [title]="mostrarConfirmacao ? 'Ocultar senha' : 'Mostrar senha'">
+                    <svg class="icone-contorno" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path *ngIf="mostrarConfirmacao" d="M3 3l18 18" />
+                    </svg>
+                </button>
+                    <div class="invalid-feedback">
+                        {{ confirmacaoCampo.errors?.['required'] ? 'Confirme a nova senha.' : 'A confirmação não é igual à nova senha.' }}
+                    </div>
+                </div>
+
+                <!-- Permite salvar apertando Enter -->
+                <button type="submit" hidden></button>
+
+                <div class="btn-group btn-group-lg">
+                    <button type="button" (click)="salvar()" class="btn" [disabled]="enviando">{{ enviando ? 'Salvando...' : 'Salvar nova senha' }}</button>
+                    <button type="button" (click)="recomecar()" class="btn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </ng-template>
+</div>

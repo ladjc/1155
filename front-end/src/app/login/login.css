@@ -72,7 +72,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     min-width: 220px;
     text-align: center;
-    animation: fadeIn 0.3s ease-in;
 }
 
 .alerta-quadrado-f {
@@ -83,5 +82,22 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     min-width: 220px;
     text-align: center;
-    animation: fadeIn 0.3s ease-in;
+}
+
+/* ===== Botão de mostrar/ocultar senha ===== */
+.btn-olho {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.85rem;
+    background-color: #212529;
+    border: 2px solid #59a403;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+}
+
+.btn-olho:hover,
+.btn-olho:focus-visible {
+    background-color: #2b3035;
+    outline: none;
 }

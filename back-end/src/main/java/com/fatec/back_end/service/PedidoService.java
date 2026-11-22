@@ -15,6 +15,7 @@ import com.fatec.back_end.exception.EstoqueInsuficienteException;
 import com.fatec.back_end.model.ItemPedido;
 import com.fatec.back_end.model.Pedido;
 import com.fatec.back_end.model.Produto;
+import com.fatec.back_end.repository.ClienteRepository;
 import com.fatec.back_end.repository.PedidoRepository;
 import com.fatec.back_end.repository.ProdutoRepository;
 
@@ -23,10 +24,13 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
     private final ProdutoRepository produtoRepository;
+    private final ClienteRepository clienteRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, ProdutoRepository produtoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, ProdutoRepository produtoRepository,
+            ClienteRepository clienteRepository) {
         this.pedidoRepository = pedidoRepository;
         this.produtoRepository = produtoRepository;
+        this.clienteRepository = clienteRepository;
     }
 
     /**
@@ -41,6 +45,9 @@ public class PedidoService {
         }
         if (pedido.getClienteId() != null && pedido.getClienteId() <= 0) {
             throw new IllegalArgumentException("O cliente informado é inválido.");
+        }
+        if (pedido.getClienteId() != null && !clienteRepository.existsById(pedido.getClienteId())) {
+            throw new IllegalArgumentException("O cliente informado não foi encontrado.");
         }
 
         Map<Integer, Integer> quantidadesPorProduto = agruparQuantidades(pedido.getItens());

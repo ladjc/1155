@@ -132,12 +132,49 @@
 
 
       <!-- Login -->
-      <li class="nav-item nav-item-login">
+      <li class="nav-item nav-item-login" *ngIf="!auth.estaLogado()">
         <a href="login" class="nav-link nav-login-link btn-contorno-verde">
           <span>Login</span>
         </a>
       </li>
 
+      <!-- Cliente logado: o botão Login some e aparecem o usuário e o logoff -->
+      <li class="nav-item nav-item-login nav-item-conta" *ngIf="auth.clienteLogado() as cliente">
+        <div class="nav-conta">
+          <a href="conta" class="nav-link nav-usuario btn-contorno-verde" [title]="cliente.email + ' - Minha conta'">
+            <svg class="icone-contorno" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+            </svg>
+            <span class="nav-usuario-nome">{{ primeiroNome(cliente.nome) }}</span>
+          </a>
+          <button type="button" class="nav-link nav-logoff btn-contorno-verde" (click)="abrirConfirmacaoSaida()"
+                  title="Sair da conta" aria-label="Sair da conta">
+            <svg class="icone-contorno" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <path d="M16 17l5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+          </button>
+        </div>
+      </li>
+
     </ul>
   </div>
 </nav>
+
+<!-- Confirmação de logoff -->
+<div class="modal-saida-fundo" *ngIf="confirmandoSaida" (click)="cancelarSaida()">
+  <div class="modal-saida" role="dialog" aria-modal="true" aria-labelledby="tituloSaida"
+       (click)="$event.stopPropagation()">
+    <h4 id="tituloSaida" class="modal-saida-titulo">Sair da conta</h4>
+    <p class="modal-saida-texto">
+      <span *ngIf="auth.clienteLogado() as cliente">{{ primeiroNome(cliente.nome) }}, </span>deseja
+      realmente sair da sua conta?
+    </p>
+    <div class="modal-saida-botoes">
+      <button type="button" class="modal-saida-btn modal-saida-sim" (click)="confirmarSaida()">Sim</button>
+      <button type="button" class="modal-saida-btn" (click)="cancelarSaida()">Não</button>
+    </div>
+  </div>
+</div>

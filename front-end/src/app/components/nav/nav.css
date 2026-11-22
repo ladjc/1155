@@ -252,3 +252,49 @@
   background-color: #59a403;
   color: #fff;
 }
+
+
+/* ===== CONTA DO CLIENTE (usuário + logoff) ===== */
+.nav-conta {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-usuario {
+  max-width: 200px;
+}
+
+.nav-usuario-nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-logoff {
+  width: auto;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* No hover o botão fica verde; o contorno do ícone fica branco para continuar visível */
+.nav-usuario:hover .icone-contorno,
+.nav-logoff:hover .icone-contorno,
+.nav-logoff:focus-visible .icone-contorno {
+  stroke: #fff;
+}
+
+/* Ícones (.icone-contorno) e a confirmação de logoff (.modal-saida-*)
+   ficam no styles.css, pois são estilos reutilizáveis do site */
+
+@media (max-width: 767.98px) {
+  .nav-conta {
+    width: 100%;
+  }
+
+  .nav-usuario {
+    flex: 1 1 auto;
+    max-width: none;
+    justify-content: flex-start;
+  }
+}

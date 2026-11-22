@@ -56,5 +56,31 @@ span{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     min-width: 220px;
     text-align: center;
-    animation: fadeIn 0.3s ease-in;
+}
+
+/* Erro de cadastro (ex.: e-mail ou documento já cadastrados) */
+.alerta-quadrado.alerta-erro {
+    background-color: #a72828;
+}
+
+/* Olho da senha e lista de requisitos: estilos compartilhados no styles.css
+   (seção "CAMPOS DE SENHA"); aqui só o espaçamento deste formulário */
+.requisitos-senha {
+    margin-top: -12px; /* compensa o margin-bottom do .form-control */
+    margin-bottom: 8px;
+}
+
+/* Mensagem do campo inválido logo abaixo dele (o .form-control tem margin-bottom) */
+.invalid-feedback {
+    margin-top: -14px;
+    margin-bottom: 8px;
+}
+
+/* Aviso que aparece quando o e-mail ou o documento são alterados */
+.aviso-senha-atual {
+    margin: 0.5rem 0 0.5rem;
+    padding-left: 0.6rem;
+    border-left: 4px solid #59a403;
+    color: #fff;
+    font-size: 0.95rem;
 }

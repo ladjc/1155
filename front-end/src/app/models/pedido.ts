@@ -4,7 +4,7 @@ export interface ItemPedidoRequest {
 }
 
 export interface PedidoRequest {
-  // Será preenchido quando o módulo de cliente/autenticação estiver disponível.
+  // id do cliente logado (AuthService)
   clienteId: number | null;
   itens: ItemPedidoRequest[];
 }

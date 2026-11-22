@@ -1,45 +1,114 @@
-<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+<!-- Alerta temporário: some sozinho depois de 4 segundos -->
+<div class="alert alerta-flutuante alerta-quadrado alerta-temporario" [class.alerta-erro]="erro" *ngIf="mensagem.length>0" role="alert">{{mensagem}}</div>
 
 <div class="container">
     <div class="card">
-        <h2>Preencha os dados para efetuar seu cadastro</h2>
+        <h2>{{ edicao ? 'Atualize os dados do seu cadastro' : 'Preencha os dados para efetuar seu cadastro' }}</h2>
         <p>Campos com * são <span>obrigatórios</span></p>
-        <form class="was-validated">
+
+        <!-- Sem "was-validated": clicar no campo não deixa nada vermelho; o alerta só
+             aparece depois que a pessoa digita e o campo fica vazio ou fora da regra -->
+        <form #formCadastro="ngForm">
             <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="txtNome" [(ngModel)]="obj.nome" placeholder="Informe o seu nome"
-                    required>
+                <input type="text" class="form-control" id="txtNome" name="txtNome" [(ngModel)]="obj.nome" #nome="ngModel"
+                    placeholder="Informe o seu nome" required
+                    [class.is-invalid]="campoInvalido(nome)" [class.is-valid]="campoValido(nome)">
                 <label for="txtNome" class="form-label">Nome*</label>
+                <div class="invalid-feedback">Informe o seu nome.</div>
             </div>
             <div class="form-floating mb-3 mt-3">
-                <input type="email" class="form-control" name="txtEmail" [(ngModel)]="obj.email" placeholder="Informe o seu email"
-                required>
+                <input type="email" class="form-control" id="txtEmail" name="txtEmail" [(ngModel)]="obj.email" #email="ngModel" #emailEl
+                    placeholder="Informe o seu email" required [pattern]="regraEmail" autocomplete="email"
+                    [class.is-invalid]="campoInvalido(email, emailEl)" [class.is-valid]="campoValido(email, emailEl)">
                 <label for="txtEmail" class="form-label">Email*</label>
+                <div class="invalid-feedback">{{ email.errors?.['required'] ? 'Informe o seu e-mail.' : 'Informe um e-mail válido (ex.: nome@email.com).' }}</div>
             </div>
             <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="txtDocumento" [(ngModel)]="obj.documento"
-                placeholder="Informe o seu documento" required>
+                <input type="text" class="form-control" id="txtDocumento" name="txtDocumento" [(ngModel)]="obj.documento"
+                    #documento="ngModel" placeholder="Informe o seu documento" required
+                    [class.is-invalid]="campoInvalido(documento)" [class.is-valid]="campoValido(documento)">
                 <label for="txtDocumento" class="form-label">Documento*</label>
+                <div class="invalid-feedback">Informe o seu documento.</div>
             </div>
             <div class="form-floating mb-3 mt-3">
-                <textarea class="form-control" name="txtLogradouro" [(ngModel)]="obj.endereco"
-                placeholder="Informe o seu endereço completo" required rows="5"></textarea>
+                <textarea class="form-control" id="txtLogradouro" name="txtLogradouro" [(ngModel)]="obj.endereco" #endereco="ngModel"
+                    placeholder="Informe o seu endereço completo" required rows="5"
+                    [class.is-invalid]="campoInvalido(endereco)" [class.is-valid]="campoValido(endereco)"></textarea>
                 <label for="txtLogradouro" class="form-label">Endereço*</label>
+                <div class="invalid-feedback">Informe o seu endereço.</div>
             </div>
             <div class="form-floating mb-3 mt-3">
-                <input type="text" class="form-control" name="txtTelefone" [(ngModel)]="obj.telefone"
-                placeholder="Informe o seu telefone" pattern="[0-9]{4,5}-[0-9]{4}">
+                <input type="text" class="form-control" id="txtTelefone" name="txtTelefone" [(ngModel)]="obj.telefone" #telefone="ngModel" #telefoneEl
+                    placeholder="Informe o seu telefone" pattern="[0-9]{4,5}-[0-9]{4}"
+                    [class.is-invalid]="campoInvalido(telefone, telefoneEl)" [class.is-valid]="campoValido(telefone, telefoneEl)">
                 <label for="txtTelefone" class="form-label">Telefone</label>
+                <div class="invalid-feedback">Use o formato 0000-0000 ou 00000-0000.</div>
             </div>
-            <div class="form-floating mb-3 mt-3">
-                <input type="password" class="form-control" name="txtSenha" placeholder="Informe a sua senha" required
-                [(ngModel)]="obj.senha" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}">
+
+            <!-- Senha: só no cadastro novo (na edição, a senha é trocada em "Alterar senha") -->
+            <div class="form-floating mb-3 mt-3 campo-senha" *ngIf="!edicao">
+                <input [type]="mostrarSenha ? 'text' : 'password'" class="form-control" id="txtSenha" name="txtSenha"
+                    placeholder="Informe a sua senha" autocomplete="new-password" required #senha="ngModel" #senhaEl
+                    [(ngModel)]="obj.senha" [pattern]="padraoSenha"
+                    (focus)="senhaEmFoco = true" (blur)="senhaEmFoco = false"
+                    [class.is-invalid]="campoInvalido(senha, senhaEl)" [class.is-valid]="campoValido(senha, senhaEl)"
+                    aria-describedby="requisitosSenha">
                 <label for="txtSenha" class="form-label">Senha*</label>
-                <div class="invalid-feedback">"A senha deve conter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra
-                minúscula, um número e um caractere especial (@$!%*?&)."</div>
+                <!-- mousedown.preventDefault: clicar no olho não tira o foco do campo,
+                     então a lista de requisitos continua aberta -->
+                <button type="button" class="btn-olho" (mousedown)="$event.preventDefault()"
+                    (click)="mostrarSenha = !mostrarSenha"
+                    [attr.aria-label]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'"
+                    [attr.aria-pressed]="mostrarSenha" [title]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'">
+                    <svg class="icone-contorno" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path *ngIf="mostrarSenha" d="M3 3l18 18" />
+                    </svg>
+                </button>
+                <div class="invalid-feedback" *ngIf="!senhaEmFoco">
+                    {{ senha.errors?.['required'] ? 'Informe uma senha.' : 'A senha não atende a todos os requisitos.' }}
+                </div>
+
+                <!-- Só aparece com o campo em foco e lista apenas o que ainda falta -->
+                <div id="requisitosSenha" class="requisitos-senha" *ngIf="senhaEmFoco" aria-live="polite">
+                    <ng-container *ngIf="requisitosFaltando.length > 0; else senhaOk">
+                        <span class="requisitos-titulo">A senha ainda precisa de:</span>
+                        <ul>
+                            <li *ngFor="let requisito of requisitosFaltando">{{ requisito }}</li>
+                        </ul>
+                    </ng-container>
+                    <ng-template #senhaOk>
+                        <span class="requisitos-ok">Senha válida! Todos os requisitos foram atendidos.</span>
+                    </ng-template>
+                </div>
+            </div>
+
+            <!-- Edição: a senha atual só aparece se o e-mail ou o documento forem alterados -->
+            <p class="aviso-senha-atual" *ngIf="precisaSenhaAtual">Para alterar o e-mail ou o documento, confirme com a sua senha atual.</p>
+            <div class="form-floating mb-3 campo-senha" *ngIf="precisaSenhaAtual">
+                <input [type]="mostrarSenhaAtual ? 'text' : 'password'" class="form-control" id="txtSenhaAtual" name="txtSenhaAtual"
+                    placeholder="Senha atual" autocomplete="current-password" required
+                    [(ngModel)]="senhaAtual" #senhaAtualCampo="ngModel"
+                    [class.is-invalid]="campoInvalido(senhaAtualCampo)" [class.is-valid]="campoValido(senhaAtualCampo)">
+                <label for="txtSenhaAtual" class="form-label">Senha atual*</label>
+                <button type="button" class="btn-olho" (mousedown)="$event.preventDefault()"
+                    (click)="mostrarSenhaAtual = !mostrarSenhaAtual"
+                    [attr.aria-label]="mostrarSenhaAtual ? 'Ocultar senha atual' : 'Mostrar senha atual'"
+                    [attr.aria-pressed]="mostrarSenhaAtual" [title]="mostrarSenhaAtual ? 'Ocultar senha' : 'Mostrar senha'">
+                    <svg class="icone-contorno" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path *ngIf="mostrarSenhaAtual" d="M3 3l18 18" />
+                    </svg>
+                </button>
+                <div class="invalid-feedback">Informe a sua senha atual.</div>
             </div>
 
             <div class="btn-group btn-group-lg">
-                <button type="button" (click)="gravar()" class="btn">Cadastrar</button>
+                <button type="button" (click)="gravar()" class="btn" [disabled]="enviando">
+                    {{ enviando ? 'Enviando...' : (edicao ? 'Salvar alterações' : 'Cadastrar') }}
+                </button>
                 <button type="button" (click)="voltar()" class="btn">Voltar</button>
             </div>
         </form>

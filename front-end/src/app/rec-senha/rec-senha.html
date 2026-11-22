@@ -1,23 +1,54 @@
-<div class="alert alerta-flutuante alerta-quadrado" *ngIf="mensagem.length>0">{{mensagem}}</div>
+<!-- Alerta temporário: some sozinho depois de 4 segundos -->
+<div class="alert alerta-flutuante alerta-quadrado alerta-temporario" [class.alerta-erro]="erro" *ngIf="mensagem.length>0" role="alert">{{mensagem}}</div>
 
 <div class="container">
     <div class="card card-login">
-        <h2>Informe seu e-mail cadastrado</h2>
+        <!-- 1ª etapa: informar e verificar o e-mail -->
+        <ng-container *ngIf="!emailVerificado; else verificado">
+            <h2>Informe seu e-mail cadastrado</h2>
 
-        <form class="was-validated">
-            <div class="input-group mb-3 input-group-lg">
-                <span class="input-group-text sp-inp">E-mail</span>
-                <input type="email" class="form-control" placeholder="Digite seu E-mail" required>
+            <!-- Clicar no campo não deixa nada vermelho; o alerta só aparece depois
+                 que a pessoa digita e o e-mail fica vazio ou inválido -->
+            <form (ngSubmit)="recuperar()">
+                <div class="input-group has-validation mb-3 input-group-lg">
+                    <span class="input-group-text sp-inp">E-mail</span>
+                    <input type="email" class="form-control" name="email" placeholder="Digite seu E-mail" autocomplete="email"
+                        required [pattern]="regraEmail" [(ngModel)]="email" #emailCampo="ngModel" #emailEl
+                        [class.is-invalid]="campoInvalido(emailCampo, emailEl)" [class.is-valid]="campoValido(emailCampo, emailEl)">
+                    <div class="invalid-feedback">
+                        {{ emailCampo.errors?.['required'] ? 'Informe o seu e-mail.' : 'Informe um e-mail válido (ex.: nome@email.com).' }}
+                    </div>
+                </div>
+                <!-- Permite enviar apertando Enter -->
+                <button type="submit" hidden></button>
+            </form>
+            <div class="row">
+                <button type="button" (click)="recuperar()" class="btn-rec" [disabled]="enviando">{{ enviando ? 'Verificando...' : 'Enviar' }}</button>
+                <button type="button" (click)="voltar()" class="btn-rec">Voltar</button>
             </div>
-        </form>
-        <p *ngIf="mensagem.length>0">Um e-mail de recuperação foi enviado para o e-mail informado. <br>
-            Verifique a caixa de Spam se necessário. </p>
-        <div class="row"> 
-                <button type="button" (click)="recuperar()" class="btn-rec">Enviar</button>      
-                <button type="button" (click)="voltar()" class="btn-rec">Voltar</button>           
-        </div>    
-        
-                    
+        </ng-container>
 
+        <!-- 2ª etapa: digitar o código de 6 dígitos enviado ao e-mail -->
+        <ng-template #verificado>
+            <h2>Digite o código</h2>
+            <p class="email-confirmado">Um código foi enviado para o e-mail informado, digite ele no campo abaixo.</p>
+
+            <form (ngSubmit)="confirmarCodigo()" class="form-codigo">
+                <input type="text" class="form-control campo-codigo" name="codigo" placeholder="000000"
+                    inputmode="numeric" autocomplete="one-time-code" maxlength="6" required pattern="\d{6}"
+                    aria-label="Código de 6 dígitos"
+                    [ngModel]="codigo" (ngModelChange)="aoDigitarCodigo($event, codigoEl)" #codigoCampo="ngModel" #codigoEl
+                    [class.is-invalid]="campoInvalido(codigoCampo, codigoEl)" [class.is-valid]="campoValido(codigoCampo, codigoEl)">
+                <div class="invalid-feedback text-center">O código tem 6 dígitos.</div>
+                <!-- Permite confirmar apertando Enter -->
+                <button type="submit" hidden></button>
+            </form>
+
+            <div class="row">
+                <button type="button" (click)="confirmarCodigo()" class="btn-rec" [disabled]="enviando">{{ enviando ? 'Verificando...' : 'Confirmar código' }}</button>
+                <button type="button" (click)="reenviarCodigo()" class="btn-rec" [disabled]="enviando">Reenviar código</button>
+                <button type="button" (click)="trocarEmail()" class="btn-rec">Usar outro e-mail</button>
+            </div>
+        </ng-template>
     </div>
 </div>

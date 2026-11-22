@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { Subject, catchError, debounceTime, of, switchMap } from 'rxjs';
 import { Produto } from '../../models/produto';
 import { ProdutoService } from '../../services/produto';
+import { AuthService } from '../../services/auth';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -29,6 +30,7 @@ export class Nav {
     private router: Router,
     private produtoService: ProdutoService,
     private cdr: ChangeDetectorRef,
+    public auth: AuthService,
   ) {
     this.entradaBusca$
       .pipe(
@@ -102,6 +104,33 @@ export class Nav {
       this.podeSugerir = false;
       this.sugestoesVisiveis = false;
     }
+  }
+
+  primeiroNome(nome: string): string {
+    return (nome ?? '').trim().split(' ')[0];
+  }
+
+  // ---------- Logoff com confirmação ----------
+  confirmandoSaida = false;
+
+  abrirConfirmacaoSaida(): void {
+    this.confirmandoSaida = true;
+  }
+
+  cancelarSaida(): void {
+    this.confirmandoSaida = false;
+  }
+
+  confirmarSaida(): void {
+    this.confirmandoSaida = false;
+    this.auth.logout();
+    this.router.navigate(['/']);
+  }
+
+  // Esc fecha a confirmação, como em qualquer janela de diálogo
+  @HostListener('document:keydown.escape')
+  onEsc(): void {
+    this.confirmandoSaida = false;
   }
 
   formatarPreco(preco: number): string {

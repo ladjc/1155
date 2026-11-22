@@ -1,3 +1,4 @@
+/* ===== BOTÕES E CONTORNOS ===== */
 .btn-contorno-verde {
   border: 2px solid #59a403;
   border-radius: 8px;
@@ -8,6 +9,7 @@
   color: #fff;
 }
 
+/* ===== BASE DA PÁGINA ===== */
 html, body {
   height: 100%;
   margin: 0;
@@ -22,6 +24,7 @@ body {
   background-attachment: fixed;
 }
 
+/* ===== SEÇÕES E CARDS ===== */
 .secao-text {
   display: inline-block;
   background-color: #212529;
@@ -42,6 +45,7 @@ body {
   font-size: clamp(0.85rem, 2vw, 1.25rem);
 }
 
+/* ===== PRODUTOS ===== */
 .card-img-top {
   width: 90%;
   margin: 5% auto 0 auto;
@@ -78,6 +82,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
+/* ===== ALERTAS ===== */
 .alerta-flutuante {
   position: fixed;
   top: 20px;
@@ -102,6 +107,12 @@ body {
   opacity: 0;
 }
 
+/* Alerta que some sozinho depois de 4 s (login, cadastro e minha conta) */
+.alerta-temporario {
+  animation: alertaTemporario 4s ease forwards;
+}
+
+/* ===== BOTÕES DE AÇÃO ===== */
 .botoes-acao {
   display: flex;
   gap: 0.5rem;
@@ -127,3 +138,166 @@ body {
   }
 }
 
+/* ===== ÍCONES ===== */
+/* Ícones simples, só com contorno, no verde do site (usuário, logoff, olho da senha) */
+.icone-contorno {
+  flex-shrink: 0;
+  fill: none;
+  stroke: #59a403;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ===== CAMPOS DE SENHA (olho e requisitos) ===== */
+/* Usados no cadastro e na troca de senha (campos .form-floating) */
+.campo-senha {
+  position: relative;
+}
+
+/* Espaço à direita para o olho; o ícone de validação do Bootstrap
+   é empurrado para a esquerda do olho */
+.campo-senha .form-control {
+  padding-right: 5.5rem;
+  background-position: right 3.25rem center !important;
+}
+
+.campo-senha .btn-olho {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: calc(3.5rem + 2px); /* altura do input form-floating */
+  display: flex;
+  align-items: center;
+  padding: 0 0.85rem;
+  background: transparent;
+  border: none;
+  border-left: 2px solid #59a403;
+  border-radius: 0 0.375rem 0.375rem 0;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.campo-senha .btn-olho:hover,
+.campo-senha .btn-olho:focus-visible {
+  background-color: rgba(89, 164, 3, 0.15);
+  outline: none;
+}
+
+/* Lista adaptativa: mostra só os requisitos que ainda faltam */
+.requisitos-senha {
+  padding: 0.6rem 0.9rem;
+  background-color: #2b3035;
+  border-left: 4px solid #59a403;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+}
+
+.requisitos-senha ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.requisitos-senha li {
+  color: #ff8a8a;
+}
+
+.requisitos-senha .requisitos-titulo {
+  color: #fff;
+}
+
+.requisitos-senha .requisitos-ok {
+  color: #85e903;
+  font-weight: bold;
+}
+
+/* ===== JANELA DE CONFIRMAÇÃO (logoff) ===== */
+.modal-saida-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  animation: modalSaidaAparecer 0.15s ease-out;
+}
+
+.modal-saida {
+  width: 100%;
+  max-width: 400px;
+  padding: 1.5rem;
+  background-color: #212529;
+  color: #fff;
+  border: 2px solid #59a403;
+  border-radius: 8px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-family: inherit;
+}
+
+.modal-saida-titulo {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding-left: 0.75rem;
+  border-left: 4px solid #59a403;
+  font-weight: bold;
+}
+
+.modal-saida-texto {
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.modal-saida-botoes {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.modal-saida-btn {
+  min-width: 110px;
+  padding: 0.5rem 1rem;
+  background-color: #212529;
+  color: #fff;
+  border: 2px solid #59a403;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.modal-saida-btn:hover,
+.modal-saida-btn:focus-visible {
+  background-color: #59a403;
+  outline: none;
+}
+
+.modal-saida-sim {
+  background-color: #59a403;
+}
+
+.modal-saida-sim:hover,
+.modal-saida-sim:focus-visible {
+  background-color: #4a8902;
+}
+
+/* ===== ANIMAÇÕES ===== */
+/* fadeIn já era usada pelos alertas (aqui e em login, cadastro e rec-senha), mas não estava definida */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes alertaTemporario {
+  0%   { opacity: 0; transform: translateY(-8px); }
+  8%   { opacity: 1; transform: translateY(0); }
+  88%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes modalSaidaAparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

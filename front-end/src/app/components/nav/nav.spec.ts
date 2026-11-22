@@ -3,6 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Nav } from './nav';
+import { AuthService } from '../../services/auth';
 
 const esperar = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,6 +24,8 @@ describe('Nav', () => {
 
   beforeEach(async () => {
     navegacoes = [];
+    localStorage.removeItem('clienteLogado');
+    sessionStorage.removeItem('clienteLogado');
 
     await TestBed.configureTestingModule({
       imports: [Nav],
@@ -100,5 +103,56 @@ describe('Nav', () => {
 
     expect(component.produtosFiltrados.length).toBe(0);
     expect(component.sugestoesVisiveis).toBe(false);
+  });
+
+  describe('conta do cliente', () => {
+    const el = () => fixture.nativeElement as HTMLElement;
+
+    const logar = () => {
+      TestBed.inject(AuthService).clienteLogado.set({
+        id: 1, nome: 'Luigi Buono', email: 'luigi@gmail.com', telefone: null, documento: '1', endereco: 'Rua A',
+      });
+      fixture.detectChanges();
+    };
+
+    it('sem login mostra o botão Login', () => {
+      expect(el().textContent).toContain('Login');
+      expect(el().querySelector('.nav-usuario')).toBeNull();
+      expect(el().querySelector('.nav-logoff')).toBeNull();
+    });
+
+    it('logado esconde o Login e mostra usuário + logoff', () => {
+      logar();
+      expect(el().querySelector('.nav-login-link:not(.nav-usuario)')).toBeNull();
+      expect(el().querySelector('.nav-usuario-nome')?.textContent?.trim()).toBe('Luigi');
+      expect(el().querySelector('.nav-logoff')).not.toBeNull();
+    });
+
+    it('logoff pergunta antes; "Não" mantém o cliente logado', () => {
+      logar();
+      (el().querySelector('.nav-logoff') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      expect(el().querySelector('.modal-saida')?.textContent).toContain('deseja');
+
+      const nao = Array.from(el().querySelectorAll('.modal-saida-btn')).find((b) => b.textContent?.trim() === 'Não');
+      (nao as HTMLButtonElement).click();
+      fixture.detectChanges();
+
+      expect(el().querySelector('.modal-saida')).toBeNull();
+      expect(TestBed.inject(AuthService).estaLogado()).toBe(true);
+    });
+
+    it('"Sim" faz o logoff e volta para a vitrine', () => {
+      logar();
+      (el().querySelector('.nav-logoff') as HTMLButtonElement).click();
+      fixture.detectChanges();
+      (el().querySelector('.modal-saida-sim') as HTMLButtonElement).click();
+      fixture.detectChanges();
+
+      expect(TestBed.inject(AuthService).estaLogado()).toBe(false);
+      expect(el().querySelector('.modal-saida')).toBeNull();
+      expect(el().textContent).toContain('Login');
+      expect(navegacoes.at(-1)).toEqual([['/']]);
+    });
   });
 });

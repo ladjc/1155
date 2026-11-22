@@ -1,5 +1,7 @@
-<div class="alert alerta-flutuante alerta-quadrado-f" *ngIf="mensagem.length>0 && verificado==false">{{mensagem}}</div>
-<div class="alert alerta-flutuante alerta-quadrado-c" *ngIf="verificado==true">{{mensagem}}</div>
+<!-- Alertas temporários: somem sozinhos depois de 4 segundos -->
+<div class="alert alerta-flutuante alerta-quadrado-f alerta-temporario" *ngIf="mensagem.length>0 && verificado==false" role="alert">{{mensagem}}</div>
+<div class="alert alerta-flutuante alerta-quadrado-c alerta-temporario" *ngIf="mensagemSucesso.length>0 && verificado==false" role="status">{{mensagemSucesso}}</div>
+<div class="alert alerta-flutuante alerta-quadrado-c alerta-temporario" *ngIf="verificado==true && boasVindas" role="status">Seja bem vindo, {{ auth.clienteLogado()?.nome }}!</div>
 
 <div class="container" *ngIf="verificado==false">
     <h3 class="mb-3 secao-text">Faça seu login e aproveite produtos com até <span id="sp-ttl"><b>25%</b></span> de desconto!</h3>
@@ -10,23 +12,45 @@
     <div class="card card-login">
         <h2>Entre com seu e-mail e senha</h2>
 
-        <form class="was-validated">
-            <div class="input-group mb-3 input-group-lg">
+        <!-- Sem "was-validated": clicar no campo não deixa nada vermelho; o alerta só
+             aparece depois que a pessoa digita e o campo fica vazio ou com e-mail inválido -->
+        <form #formLogin="ngForm" (ngSubmit)="fazerLogin()">
+            <div class="input-group has-validation mb-3 input-group-lg">
                 <span class="input-group-text sp-inp">E-mail</span>
-                <input type="email" name="email" [(ngModel)]="email" placeholder="Digite seu E-mail" class="form-control" required>
+                <input type="email" name="email" [(ngModel)]="email" #emailCampo="ngModel" #emailEl placeholder="Digite seu E-mail"
+                    class="form-control" autocomplete="username" required [pattern]="regraEmail"
+                    [class.is-invalid]="campoInvalido(emailCampo, emailEl)" [class.is-valid]="campoValido(emailCampo, emailEl)">
+                <div class="invalid-feedback">
+                    {{ emailCampo.errors?.['required'] ? 'Informe o seu e-mail.' : 'Informe um e-mail válido (ex.: nome@email.com).' }}
+                </div>
             </div>
-            <div class="input-group mb-3 input-group-lg">
+            <div class="input-group has-validation mb-3 input-group-lg">
                 <span class="input-group-text sp-inp">Senha</span>
-                <input type="password" name="senha" [(ngModel)]="senha" placeholder="Digite sua Senha" class="form-control" required> 
-                <!-- pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#@$!%*?&])[A-Za-z\d#@$!%*?&]{8,}" --> 
+                <input [type]="mostrarSenha ? 'text' : 'password'" name="senha" [(ngModel)]="senha" #senhaCampo="ngModel"
+                    placeholder="Digite sua Senha" class="form-control" autocomplete="current-password" required
+                    [class.is-invalid]="campoInvalido(senhaCampo)" [class.is-valid]="campoValido(senhaCampo)">
+                <!-- Olho aberto = mostrar senha; olho riscado = ocultar senha.
+                     mousedown.preventDefault: o foco continua no campo, então o Enter ainda faz login -->
+                <button type="button" class="btn-olho" (mousedown)="$event.preventDefault()" (click)="mostrarSenha = !mostrarSenha"
+                    [attr.aria-label]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'"
+                    [attr.aria-pressed]="mostrarSenha" [title]="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'">
+                    <svg class="icone-contorno" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                        <circle cx="12" cy="12" r="3" />
+                        <path *ngIf="mostrarSenha" d="M3 3l18 18" />
+                    </svg>
+                </button>
+                <div class="invalid-feedback">Informe a sua senha.</div>
             </div>
+            <!-- Permite entrar apertando Enter (o botão "Entrar" fica fora do form) -->
+            <button type="submit" hidden></button>
         </form>
         <label class="form-check-label">
-            <input class="form-check-input" type="checkbox" name="lembrar"> Salvar usuário
+            <input class="form-check-input" type="checkbox" name="lembrar" [(ngModel)]="lembrar"> Manter conectado
         </label>
         <div class="row"> 
-            <button (click)="fazerLogin();" class="btn-in">Entrar</button>        
-            <button (click)="esqueciSenha()" class="btn-in">Esqueci a Senha</button>           
+            <button type="button" (click)="fazerLogin()" class="btn-in" [disabled]="enviando">{{ enviando ? 'Entrando...' : 'Entrar' }}</button>        
+            <button type="button" (click)="esqueciSenha()" class="btn-in">Esqueci a Senha</button>           
         </div>
     </div>
 </div>
@@ -48,4 +72,4 @@
             <button type="button" (click)="carrinho()" class="btn-in">Ir para o Carrinho</button>           
         </div>
     </div>
-</div>
+</div>
