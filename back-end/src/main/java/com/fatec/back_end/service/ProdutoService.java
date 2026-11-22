@@ -54,4 +54,22 @@ public class ProdutoService {
         }
         return false;
     }
+
+    public List<Produto> listarVitrine() {
+        return repository.findByDestaqueTrue();
+    }
+
+    // Pesquisa por nome (em partes), por categoria ou pelos dois juntos
+    public List<Produto> buscar(String nome, String categoria) {
+        boolean temNome = nome != null && !nome.isBlank();
+        boolean temCategoria = categoria != null && !categoria.isBlank();
+
+        if (temNome && temCategoria) {
+            return repository.findByNomeContainingIgnoreCaseAndCategoriaIgnoreCase(nome.trim(), categoria.trim());
+        }
+        if (temNome) {
+            return repository.findByNomeContainingIgnoreCase(nome.trim());
+        }
+        return repository.findByCategoriaIgnoreCase(categoria.trim());
+    }
 }

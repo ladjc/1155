@@ -5,15 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fatec.back_end.model.Produto;
 import com.fatec.back_end.service.ProdutoService;
@@ -79,5 +71,49 @@ public class ProdutoController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    // GET /api/produto/vitrine -> lista os produtos em destaque
+    @GetMapping("/vitrine")
+    public ResponseEntity<List<Produto>> listarVitrine() {
+        try {
+            List<Produto> produtos = service.listarVitrine();
+
+            if (produtos.isEmpty()) {
+                return ResponseEntity.noContent().build(); // 204: nenhum produto na vitrine
+            }
+
+            return ResponseEntity.ok(produtos); // 200: produtos da vitrine
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500: erro no servidor
+        }
+    }
+
+    // GET /api/produto/busca?nome=SSD -> busca por parte do nome
+    // GET /api/produto/busca?categoria=Fonte -> busca pela categoria
+    // GET /api/produto/busca?nome=ryzen&categoria=Processador -> busca pelos dois
+    @GetMapping("/busca")
+    public ResponseEntity<List<Produto>> buscar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String categoria) {
+
+        boolean semNome = nome == null || nome.isBlank();
+        boolean semCategoria = categoria == null || categoria.isBlank();
+
+        if (semNome && semCategoria) {
+            return ResponseEntity.badRequest().build(); // 400: informe nome ou categoria
+        }
+
+        try {
+            List<Produto> produtos = service.buscar(nome, categoria);
+
+            if (produtos.isEmpty()) {
+                return ResponseEntity.noContent().build(); // 204: nada encontrado
+            }
+
+            return ResponseEntity.ok(produtos); // 200: produtos encontrados
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 500: erro no servidor
+        }
     }
 }
