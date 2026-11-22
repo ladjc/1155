@@ -35,7 +35,7 @@ export class Nav {
         debounceTime(300),
         // switchMap cancela a chamada anterior se o usuário continuar digitando
         switchMap((termo) => {
-          if (!termo) {
+          if (!termo || !this.podeSugerir) {
             return of<Produto[]>([]);
           }
           // Sugestões são um extra: se der erro, apenas não mostra a lista
@@ -75,9 +75,18 @@ export class Nav {
   }
 
   onBuscar(): void {
+    const termo = this.termoBusca.trim();
     this.podeSugerir = false;
     this.sugestoesVisiveis = false;
-    this.router.navigate(['/busca'], { queryParams: { termo: this.termoBusca } });
+    this.produtosFiltrados = [];
+
+    // Não cria uma URL de busca inválida nem chama o endpoint sem parâmetro.
+    if (!termo) {
+      return;
+    }
+
+    this.termoBusca = termo;
+    this.router.navigate(['/busca'], { queryParams: { termo } });
   }
 
   // A página /busca é quem consulta o endpoint /api/produto/busca com a categoria

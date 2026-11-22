@@ -62,13 +62,27 @@ describe('Nav', () => {
     expect(navegacoes[0][1]).toEqual({ queryParams: { categoria: 'Fonte' } });
   });
 
+  it('deve buscar o termo aparado ao enviar a barra', () => {
+    component.termoBusca = '  ryzen  ';
+    component.onBuscar();
+
+    expect(navegacoes[0]).toEqual([['/busca'], { queryParams: { termo: 'ryzen' } }]);
+  });
+
+  it('não deve navegar ao enviar uma busca vazia', () => {
+    component.termoBusca = '   ';
+    component.onBuscar();
+
+    expect(navegacoes).toEqual([]);
+  });
+
   it('deve mostrar até 6 sugestões vindas do back-end', async () => {
     component.termoBusca = 'proc';
     component.onInputBusca();
     await esperar(350); // espera o debounce
 
     httpMock
-      .expectOne((r) => r.url === '/api/produto/busca' && r.params.get('termo') === 'proc')
+      .expectOne((r) => r.url === '/api/produto/busca' && r.params.get('nome') === 'proc')
       .flush(PRODUTOS);
 
     expect(component.produtosFiltrados.length).toBe(6);

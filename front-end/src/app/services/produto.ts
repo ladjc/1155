@@ -27,15 +27,15 @@ export class ProdutoService {
       .pipe(timeout(this.tempoLimite));
   }
 
-  // GET /api/produto/busca?termo=...&categoria=...
-  // Se o back-end usar outros nomes de parâmetro, é só ajustar aqui.
+  // GET /api/produto/busca?nome=...&categoria=...
+  // A URL da tela usa "termo", mas o contrato do back-end chama esse parâmetro de "nome".
   buscar(filtro: FiltroBusca): Observable<Produto[]> {
     let params = new HttpParams();
     if (filtro.termo) {
-      params = params.set('termo', filtro.termo);
+      params = params.set('nome', filtro.termo.trim());
     }
     if (filtro.categoria) {
-      params = params.set('categoria', filtro.categoria);
+      params = params.set('categoria', filtro.categoria.trim());
     }
 
     return this.http

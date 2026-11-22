@@ -33,4 +33,12 @@ describe('ProdutoService', () => {
 
     expect(resultado.length).toBe(1);
   });
+
+  it('deve traduzir o termo da tela para o parâmetro nome do endpoint', () => {
+    service.buscar({ termo: ' ryzen ', categoria: ' Processador ' }).subscribe();
+
+    const req = httpMock.expectOne('/api/produto/busca?nome=ryzen&categoria=Processador');
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
 });

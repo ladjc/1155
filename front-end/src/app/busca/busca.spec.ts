@@ -31,7 +31,7 @@ describe('Busca', () => {
     fixture.detectChanges(); // dispara o ngOnInit e a busca
   }
 
-  const requisicao = (chave: 'termo' | 'categoria', valor: string) =>
+  const requisicao = (chave: 'nome' | 'categoria', valor: string) =>
     httpMock.expectOne((r) => r.url === '/api/produto/busca' && r.params.get(chave) === valor);
 
   afterEach(() => {
@@ -55,7 +55,7 @@ describe('Busca', () => {
     montar({ termo: 'ryzen' });
     expect(component.carregando).toBe(true);
 
-    requisicao('termo', 'ryzen').flush([RYZEN, SEM_ESTOQUE]);
+    requisicao('nome', 'ryzen').flush([RYZEN, SEM_ESTOQUE]);
     requisicao('categoria', 'Processador').flush([RYZEN, INTEL, SEM_ESTOQUE]);
 
     expect(component.carregando).toBe(false);
@@ -77,7 +77,7 @@ describe('Busca', () => {
   it('deve exibir erro quando o back-end falha', () => {
     montar({ termo: 'ryzen' });
 
-    requisicao('termo', 'ryzen').flush('falha', { status: 500, statusText: 'Internal Server Error' });
+    requisicao('nome', 'ryzen').flush('falha', { status: 500, statusText: 'Internal Server Error' });
 
     expect(component.carregando).toBe(false);
     expect(component.erro).not.toBe('');
@@ -86,13 +86,13 @@ describe('Busca', () => {
 
   it('deve refazer a busca ao tentar novamente', () => {
     montar({ termo: 'ryzen' });
-    requisicao('termo', 'ryzen').flush('falha', { status: 500, statusText: 'Internal Server Error' });
+    requisicao('nome', 'ryzen').flush('falha', { status: 500, statusText: 'Internal Server Error' });
 
     component.carregarProdutos();
 
     expect(component.carregando).toBe(true);
     expect(component.erro).toBe('');
-    requisicao('termo', 'ryzen').flush([]);
+    requisicao('nome', 'ryzen').flush([]);
     expect(component.carregando).toBe(false);
   });
 });

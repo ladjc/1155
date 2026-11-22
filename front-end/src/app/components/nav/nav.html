@@ -10,17 +10,18 @@
 
     <!-- Barra de busca -->
     <div class="search-area">
-      <div class="input-group">
+      <form class="input-group" (ngSubmit)="onBuscar()">
         <input
           type="search"
           class="search-input btn-contorno-verde"
           placeholder="Buscar produto..."
           autocomplete="off"
+          name="termoBusca"
           [(ngModel)]="termoBusca"
           (input)="onInputBusca()"
           (focus)="onFocusBusca()"
         >
-        <button class="search-btn btn-contorno-verde" type="button" (click)="onBuscar()">Buscar</button>
+        <button class="search-btn btn-contorno-verde" type="submit">Buscar</button>
 
         <ul class="search-suggestions" *ngIf="sugestoesVisiveis">
           <li *ngFor="let produto of produtosFiltrados" (click)="selecionarProduto(produto)">
@@ -29,7 +30,7 @@
             <span class="suggestion-preco">{{ formatarPreco(produto.preco) }}</span>
           </li>
         </ul>
-      </div>
+      </form>
     </div>
 
   </div>
