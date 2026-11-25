@@ -1,64 +1,71 @@
 services:
   postgres:
-    image: postgres:${POSTGRES_VERSION}
-    container_name: ${POSTGRES_CONTAINER_NAME}
-
+    image: postgres:${POSTGRES_VERSION:-18}
+    container_name: ${POSTGRES_CONTAINER_NAME:-extratech-postgres}
     restart: unless-stopped
-
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-extratech}
+      POSTGRES_USER: ${POSTGRES_USER:-extratech}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-extratech}
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C.UTF-8"
-
-      TZ: ${TZ}
-      PGTZ: ${PGTZ}
-
-    command:
-      - postgres
-      - -c
-      - listen_addresses=*
-      - -c
-      - max_connections=50
-      - -c
-      - shared_buffers=512MB
-      - -c
-      - effective_cache_size=1GB
-      - -c
-      - maintenance_work_mem=128MB
-      - -c
-      - wal_level=replica
-      - -c
-      - log_connections=on
-      - -c
-      - log_disconnections=on
-      - -c
-      - log_statement=ddl
-
+      TZ: ${TZ:-America/Sao_Paulo}
+      PGTZ: ${PGTZ:-America/Sao_Paulo}
     ports:
-      - "${POSTGRES_PORT}:5432"
-
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - type: bind
-        source: ${POSTGRES_DATA_DIR}
-        target: /var/lib/postgresql
-
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-        ]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
-
     networks:
       - extratech-network
-    
- 
+
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      SERVER_PORT: 8080
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-extratech}
+      POSTGRES_USER: ${POSTGRES_USER:-extratech}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-extratech}
+      TZ: ${TZ:-America/Sao_Paulo}
+      EMAIL_MODO: ${EMAIL_MODO:-log}
+      MAIL_HOST: ${MAIL_HOST:-sandbox.smtp.mailtrap.io}
+      MAIL_PORT: ${MAIL_PORT:-2525}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_REMETENTE: ${MAIL_REMETENTE:-nao-responda@extratechrestre.com.br}
+      MAIL_NOME_REMETENTE: ${MAIL_NOME_REMETENTE:-ExtraTechRestre}
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - extratech-network
+
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      - backend
+    networks:
+      - extratech-network
+
+volumes:
+  postgres-data:
+
 networks:
   extratech-network:
     driver: bridge
-    
